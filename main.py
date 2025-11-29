@@ -15,6 +15,10 @@ def get_model(model_name):
         from models.preresnet import PreResNet
         print("Select preresnet")
         return PreResNet()
+    elif model_name == "resnet18":
+        from models.resnet18 import ResNet18
+        print("Select ResNet18")
+        return ResNet18()
     else:
         # Default ResNet32
         from models.resnet32 import ResNet32
@@ -30,7 +34,7 @@ def _main(args):
 
     # Models
     model = get_model(args.model)
-
+    print(model)
 
 
 if __name__ == "__main__":
