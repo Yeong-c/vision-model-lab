@@ -15,9 +15,9 @@ def get_model(model_name):
         print("Select densenet")
         return DenseNet()
     elif model_name == "preresnet":
-        from models.preresnet import PreResNet
+        from models.preresnet18 import PreResNet18
         print("Select preresnet")
-        return PreResNet()
+        return PreResNet18()
     elif model_name == "resnet18":
         from models.resnet18 import ResNet18
         print("Select ResNet18")
