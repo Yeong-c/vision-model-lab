@@ -6,11 +6,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 
 def get_model(model_name):
-    if model_name == "resnet32":
-        from models.resnet32 import ResNet32
-        print("Select resnet32")
-        return ResNet32()
-    elif model_name == "densenet":
+    if model_name == "densenet":
         from models.densenet import DenseNet
         print("Select densenet")
         return DenseNet()
@@ -22,39 +18,43 @@ def get_model(model_name):
         from models.resnet18 import ResNet18
         print("Select ResNet18")
         return ResNet18()
+    elif model_name == "resnet32":
+        from models.resnet32 import ResNet32
+        print("Select ResNet32")
+        return ResNet32
+    elif model_name == "resnet50":
+        from models.resnet50 import ResNet50
+        print("Select ResNet50")
+        return ResNet50()
     else:
         # Default ResNet32
-        from models.resnet32 import ResNet32
-        print("Unknown Model, Default ResNet32")
-        return ResNet32()
+        from models.resnet50 import ResNet50
+        print("Select Default ResNet50")
+        return ResNet50()
 
 
 ## Training Model Function
 def train_model(model, device, train_dataloader, epoch_):
     net = model.to(device)
 
-    # Loss Function
-    criterion = nn.CrossEntropyLoss()
-
-    # Optimizer
-    optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
-
-    # Scheduler
-    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[150, 225], gamma=0.1)
+    print("Start Training")
     # 300 에폭 기준
-
     for epoch in range(epoch_):
         running_loss = 0.0
+
+        net.train()
         for i, data in enumerate(train_dataloader, 0):
             inputs, labels = data[0].to(device), data[1].to(device)
 
-            optimizer.zero_grad()
+            model.optimizer.zero_grad()
 
             # forward backward optimize
             outputs = net(inputs) # input network 통과
-            loss = criterion(outputs, labels) # loss
+            loss = model.criterion(outputs, labels) # Criteriion, Model's Loss Function
+
             loss.backward()
-            optimizer.step()
+
+            model.optimizer.step()
 
             # print statistics
             running_loss += loss.item()
@@ -63,7 +63,7 @@ def train_model(model, device, train_dataloader, epoch_):
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 10:.3f}')
                 running_loss = 0.0
 
-        scheduler.step()    
+        model.scheduler.step()    
 
     print("Finished Training")
 
@@ -112,12 +112,12 @@ def _main(args):
     device = torch.device(args.device)
 
     trainset, testset = datasets.load_dataset(args.dataset) #일단 그냥 cifar10 고정
-    train_dataloader = DataLoader(trainset, batch_size=args.batch_size, num_workers=args.num_workers)
-    test_dataloader = DataLoader(testset, batch_size=args.batch_size, num_workers=args.num_workers)
+    train_dataloader = DataLoader(trainset, batch_size=args.batch_size, num_workers=args.num_workers, shuffle=True)
+    test_dataloader = DataLoader(testset, batch_size=args.batch_size, num_workers=args.num_workers, shuffle=False)
 
     # Models
     model = get_model(args.model)
-    # print(model)
+    print(model)
 
     # Train
     train_model(model, device, train_dataloader, args.epoch)
@@ -129,7 +129,7 @@ def _main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=str, default="resnet32")
+    parser.add_argument("--model", type=str, default="resnet50")
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--num_workers", type=int, default=2)
