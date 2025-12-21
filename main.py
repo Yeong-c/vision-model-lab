@@ -26,6 +26,10 @@ def get_model(model_name):
         from models.resnet50 import ResNet50
         print("Select ResNet50")
         return ResNet50()
+    elif model_name == "simclr_resnet50":
+        from models.simclr_resnet50 import SimCLR_ResNet50
+        print("Select SimCLR_ResNet50")
+        return SimCLR_ResNet50()
     else:
         # Default ResNet32
         from models.resnet50 import ResNet50
