@@ -34,6 +34,17 @@ class SupervisedTransform:
     def __call__(self, x):
         return self.transform(x)
 
+class RotNetTransform:
+    def __init__(self, image_size):
+        self.transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+
+    def __call__(self, x):
+        return self.transform(x)
+
+
 def get_dataloader(dataset_name, method, batch_size):
     # Size 미리 결정
     # Dataset 클래스 정하기
@@ -52,6 +63,8 @@ def get_dataloader(dataset_name, method, batch_size):
         train_transform = SupervisedTransform(size)
     elif method == "simclr":
         train_transform = SimCLRTransform(size)
+    elif method == "rotnet":
+        train_transform = RotNetTransform(size)
 
     # Test Transform
     # ImageNet은 크기가 제각각이라 Resize 후 Crop
