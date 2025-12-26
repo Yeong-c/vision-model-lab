@@ -19,3 +19,9 @@
 
 ## 이식 예시
 - 기존 메소드가 backbone과 head를 섞어두었다면 head부분만 methods로 옮기고 backbone은 입력->feature만 반환하도록 리팩토링.
+
+## 예시 명령어
+**ResNet50으로 Supervised Learning, CIFAR-10 데이터 셋, Batch Size 128, Epoch 5로 실행**
+```
+python main.py --model resnet50 --dataset cifar10 --method supervised --batch_size 128 --epoch 5
+```
