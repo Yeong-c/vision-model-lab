@@ -15,7 +15,10 @@
 - Model을 추가하려고 하면 ResNet 참고
 - Method를 추가하려고 하면 Supervised, SimCLR 참고
 
-가장 기본적으로 구현한 것들이라 따라가면 쉬울 것임.
+- +) Model과 Method 각각 추가 시 폴더 내의 __init__ 수정 필수
+- Method의 경우 dataset.py 내에 해당 방식 class 선언 및 적용해야하고, main에서 model에 넣어주는 코드 작성해야함
+- Model의 경우 self.num_features 안에 최종적으로 전달하는 채널 수를 담아야함
+
 
 ## 이식 예시
 - 기존 메소드가 backbone과 head를 섞어두었다면 head부분만 methods로 옮기고 backbone은 입력->feature만 반환하도록 리팩토링.
