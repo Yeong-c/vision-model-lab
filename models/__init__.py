@@ -9,7 +9,7 @@ def get_model(model_name):
     elif model_name == "vit":
         model ="vit"
     elif model_name == "densenet":
-        model = "densenet"
+        model = DenseNet()
     else:
         model = "null"
     return model
