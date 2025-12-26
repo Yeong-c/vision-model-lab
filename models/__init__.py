@@ -1,4 +1,5 @@
 from .resnet import ResNet
+from .densenet import DenseNet
 
 def get_model(model_name):
     model_name = model_name.lower()
