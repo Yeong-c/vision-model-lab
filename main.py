@@ -3,6 +3,9 @@ import torch
 import models, methods, dataset, optims # 우리 것들
 import tqdm
 
+#rotnet 평가용
+from methods.rotnet import rotate_batch
+
 # Dataset별 num_classes
 dataset_num_classes = {
     "cifar10": 10,
@@ -46,6 +49,12 @@ def _main(args):
         model = methods.SimCLR(model)
         # SimCLR은 Batch Size에 따라 LR 중요 (중요)
         args.lr = 0.3 * args.batch_size / 256
+    elif args.method == "rotnet":
+        model = methods.RotNet(model)
+        args.lr = 0.1
+        args.momentum = 0.9
+        args.weight_decay=5e-4
+        args.nesterov=True
 
     # 완전히 형성된 Model을 Device로
     model.to(device)
@@ -148,7 +157,12 @@ def test_model_accuracy(args, dataloader, model, device):
     with torch.no_grad():
         for batch in dataloader:
             x, y = batch
-            x, y = x.to(device), y.to(device)
+
+            if args.method=="rotnet":
+                x=x.to(device)
+                x,y=rotate_batch(x,device)
+            else:
+                x, y = x.to(device), y.to(device)
 
             # Predict로 Output Get
             output = model.predict(x)
