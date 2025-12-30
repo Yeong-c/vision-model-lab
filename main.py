@@ -38,7 +38,7 @@ def _main(args):
     device = torch.device(args.device)
 
     # Get DataLoader
-    train_loader, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size)
+    train_loader, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size, args.num_workers)
 
     # Get Model
     model = models.get_model(args.model)
