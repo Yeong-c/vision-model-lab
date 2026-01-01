@@ -32,16 +32,25 @@ def get_optimizers(method_name, model_name):
         return optimizers["LARS"]
     return optimizers["SGD"]
 
+
+dataset_setting = {
+    "cifar10":  {"size": 32,  "channels": 3, "classes": 10},
+    "stl10":    {"size": 96,  "channels": 3, "classes": 10},
+    "imagenet": {"size": 224, "channels": 3, "classes": 1000}
+}
+
 # MAIN
 def _main(args):
     # Set Device
     device = torch.device(args.device)
 
-    # Get DataLoader
-    train_loader, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size, args.num_workers)
+    setting = dataset_setting.get(args.dataset, {"size": 224, "channels": 3, "classes": 1000})
+    img_size = setting["size"]
+    input_shape = (setting["channels"], img_size, img_size)
 
-    # Get Model
-    model = models.get_model(args.model)
+    train_loader, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size, img_size, args.num_workers)
+
+    model = models.get_model(args.model, input_shape)
 
     # Method를 Model에 씌우기
     if args.method == "supervised":
@@ -77,6 +86,7 @@ def _main(args):
         optimizer = optims.Lars(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-6)
     elif optimizer_name == "AdamW":
         # AdamW 하이퍼 파라미터
+        if args.lr>0.01: args.lr = 1e-3 #학습불가 방지
         optimizer = optimizer(model.parameters(), lr=args.lr, weight_decay=0.05)
 
     # Scheduler에 Optimizer 매핑
@@ -108,6 +118,7 @@ def train_one_epoch(args, dataloader, model, optimizer, scheduler, device, epoch
         # 1. Device로 넣기
         x, y = batch
         x, y = x.to(device), y.to(device)
+
         batch_on_device = (x, y)
 
         # 2. Forward
