@@ -45,17 +45,17 @@ class RotNetTransform:
         return self.transform(x)
 
 
-def get_dataloader(dataset_name, method, batch_size, num_workers):
+def get_dataloader(dataset_name, method, batch_size, image_size, num_workers):
     # Size 미리 결정
     # Dataset 클래스 정하기
     if dataset_name == "cifar10":
-        size = 32
+        size = image_size if image_size else 32
         Dataset = datasets.CIFAR10
     elif dataset_name == "stl10":
-        size = 96
+        size = image_size if image_size else 96
         Dataset = datasets.STL10
     elif dataset_name == "imagenet":
-        size = 224
+        size = image_size if image_size else 224
         Dataset = datasets.ImageFolder
 
     # Method에 따라 Transform
@@ -98,8 +98,10 @@ def get_dataloader(dataset_name, method, batch_size, num_workers):
     #test_set, _ = torch.utils.data.random_split(test_set, [500, 9500])
 
     # DataLoader 생성
-    train_loader = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True, shuffle=True, drop_last=True)
-    test_loader = DataLoader(test_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True, shuffle=False)
+    train_loader = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
+    shuffle=True, drop_last=True)
+    test_loader = DataLoader(test_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
+    shuffle=False)
 
     # DataLoader 튜플 리턴
     return train_loader, test_loader
