@@ -56,16 +56,25 @@ class TransitionLayer(nn.Module):
         return out
 
 class DenseNet(nn.Module):
-    def __init__(self, k=12, dblock=(16,16,16), comp = 0.5, bneck = 4):
+    def __init__(self, input_shape=(3, 32, 32), k=12, dblock=(16,16,16), comp = 0.5, bneck = 4):
 
         super(DenseNet, self).__init__()
         #그로우레이트 2배
         finput = 2*k 
 
-        self.features = nn.Sequential(
-            nn.Conv2d(3,finput,kernel_size=3,stride=1,padding=1,bias=False)
-        )
-        now_features = finput 
+        if input_shape[1] >= 224: #ImageNet
+             self.features = nn.Sequential(
+                nn.Conv2d(3, finput, kernel_size=7, stride=2, padding=3, bias=False),
+                nn.BatchNorm2d(finput),
+                nn.ReLU(inplace=True),
+                nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+            )
+        else:
+            self.features = nn.Sequential(
+                nn.Conv2d(3, finput, kernel_size=3, stride=1, padding=1, bias=False)
+            )
+
+        now_features = finput
 
         for i, num_Layers in enumerate(dblock):
 
