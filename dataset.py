@@ -87,7 +87,9 @@ def get_dataloader(dataset_name, method, batch_size, image_size, num_workers):
         test_set = Dataset("./data", train=False, transform=test_transform, download=True)
     elif dataset_name == "stl10":
         train_split = "train" if method == "supervised" else "unlabeled"
+        train_split2 = "unlabeled" if method == "supervised" else "train"
         train_set = Dataset("./data", split=train_split, transform=train_transform, download=True)
+        train_set2 = Dataset("./data", split=train_split2, transform=test_transform, download=True)
         test_set = Dataset("./data", split="test", transform=test_transform, download=True)
     elif dataset_name == "imagenet":
         train_set = Dataset("./data/imagenet/train", transform=train_transform)
@@ -100,9 +102,12 @@ def get_dataloader(dataset_name, method, batch_size, image_size, num_workers):
     # DataLoader 생성
     train_loader = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
     shuffle=True, drop_last=True)
+    # train_loader2는 stl10을 위함
+    train_loader2 = DataLoader(train_set2, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
+    shuffle=True, drop_last=True) if dataset_name == "stl10" else None
     test_loader = DataLoader(test_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
     shuffle=False)
 
     # DataLoader 튜플 리턴
-    return train_loader, test_loader
+    return train_loader, train_loader2, test_loader
     

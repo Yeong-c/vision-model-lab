@@ -48,7 +48,7 @@ def _main(args):
     img_size = setting["size"]
     input_shape = (setting["channels"], img_size, img_size)
 
-    train_loader, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size, img_size, args.num_workers)
+    train_loader, train_loader2, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size, img_size, args.num_workers)
 
     model = models.get_model(args.model, input_shape)
 
@@ -106,7 +106,7 @@ def _main(args):
         )
 
     # 학습!!!!
-    train_model(args, test_loader=test_loader, train_loader=train_loader, model=model, optimizer=optimizer, scheduler=scheduler, device=device)
+    train_model(args, test_loader=test_loader, train_loader=train_loader, train_loader2=train_loader2, model=model, optimizer=optimizer, scheduler=scheduler, device=device)
 
 def train_one_epoch(args, dataloader, model, optimizer, scheduler, device, epoch_cnt):
     model.train()
@@ -145,7 +145,7 @@ def train_one_epoch(args, dataloader, model, optimizer, scheduler, device, epoch
 
 # Main Training 함수
 # train_one_epoch를 Epoch만큼 반복.
-def train_model(args, test_loader, train_loader, model, optimizer, scheduler, device):
+def train_model(args, test_loader, train_loader, train_loader2, model, optimizer, scheduler, device):
     print("="*50)
     print("**START TRAINING**")
     print(f"Model: {args.model}\t\tMethod: {args.method}\t\tDataset: {args.dataset}")
@@ -177,7 +177,7 @@ def train_model(args, test_loader, train_loader, model, optimizer, scheduler, de
             # Feature Acc(KNN)
             if (ep + 1) % 5 == 0:
                 print("   **Calculating KNN Accuracy**")
-                acc = test_model_KNN(args, train_loader, test_loader, model, device, 200)
+                acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
                 print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
 
         else:
@@ -185,7 +185,7 @@ def train_model(args, test_loader, train_loader, model, optimizer, scheduler, de
             if (ep + 1) % 5 == 0:
                 if args.method == "simclr":
                     print("   **Calculating KNN Accuracy**")
-                    acc = test_model_KNN(args, train_loader, test_loader, model, device, 200)
+                    acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
                     print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
 
         # 모델 저장(checkpoint)
@@ -231,13 +231,16 @@ def test_model_accuracy(args, test_loader, model, device):
     return acc
 
 # KNN Test 함수
-def test_model_KNN(args, train_loader, test_loader, model, device, K):
+def test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, K):
     model.eval()
     correct = 0
     total = 0
 
     train_features = []
     train_labels = []
+
+    # stl10이면 train_loader2를 사용(unsupervised여도 확인할 땐 labeled로 확인해야 됨)
+    if train_loader2 != None: train_loader = train_loader2
 
     # Train Set Feature들 저장
     with torch.no_grad():
