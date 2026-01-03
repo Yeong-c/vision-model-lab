@@ -64,5 +64,5 @@ class SimCLR(nn.Module):
     
     def predict(self, x):
         features = self.model(x)
-        output = self.head(x)
+        output = self.head(features)
         return output
