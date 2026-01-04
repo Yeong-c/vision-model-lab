@@ -65,6 +65,9 @@ def _main(args):
         args.momentum = 0.9
         args.weight_decay=5e-4
         args.nesterov=True
+    elif args.method == "moco":
+        model = methods.MoCo(model)
+        args.lr = 0.03
 
     # 완전히 형성된 Model을 Device로
     model.to(device)

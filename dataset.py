@@ -2,6 +2,7 @@ import torch
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader
 
+
 class SimCLRTransform:
     # SimSiam 참고
     def __init__(self, image_size):
@@ -65,6 +66,8 @@ def get_dataloader(dataset_name, method, batch_size, image_size, num_workers):
         train_transform = SimCLRTransform(size)
     elif method == "rotnet":
         train_transform = RotNetTransform(size)
+    elif method == "moco":
+        train_transform = SimCLRTransform(size)
 
     # Test Transform
     # ImageNet은 크기가 제각각이라 Resize 후 Crop
