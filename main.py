@@ -30,6 +30,9 @@ def get_optimizers(method_name, model_name):
     if method_name == "simclr":
         # SimCLR은 LARS
         return optimizers["LARS"]
+    if method_name == "moco":   
+        # MoCo는 SGD
+        return optimizers["SGD"]
     return optimizers["SGD"]
 
 
@@ -183,13 +186,12 @@ def train_model(args, test_loader, train_loader, train_loader2, model, optimizer
                 acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
                 print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
 
-        else:
+        elif args.method == "simclr"  or args.method == "moco":
             # 아니면 Epoch 5개마다 KNN으로 측정
             if (ep + 1) % 5 == 0:
-                if args.method == "simclr":
-                    print("   **Calculating KNN Accuracy**")
-                    acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
-                    print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
+                print("   **Calculating KNN Accuracy**")
+                acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
+                print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
 
         # 모델 저장(checkpoint)
         os.makedirs("./checkpoints", exist_ok=True)
