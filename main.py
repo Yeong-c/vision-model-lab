@@ -14,28 +14,6 @@ dataset_num_classes = {
     "imagenet": 1000
 }
 
-# String : Optimizer
-optimizers = {
-    "LARS": ("LARS", torch.optim.SGD),
-    "AdamW": ("AdamW", torch.optim.AdamW),
-    "SGD": ("SGD", torch.optim.SGD)
-}
-
-# Method, Architecture별 기본 Optimizers
-# Optimizers
-def get_optimizers(method_name, model_name):
-    if model_name == "vit":
-        # ViT는 AdamW
-        return optimizers["AdamW"]
-    if method_name == "simclr":
-        # SimCLR은 LARS
-        return optimizers["LARS"]
-    if method_name == "moco":   
-        # MoCo는 SGD
-        return optimizers["SGD"]
-    return optimizers["SGD"]
-
-
 dataset_setting = {
     "cifar10":  {"size": 32,  "channels": 3, "classes": 10},
     "stl10":    {"size": 96,  "channels": 3, "classes": 10},
@@ -75,41 +53,13 @@ def _main(args):
     # 완전히 형성된 Model을 Device로
     model.to(device)
 
-    # Optimizer, Scheduler, lr 설정
-    # Default나 optimizer가 없는 경우에는 기본적 optimizer 사용
-    if args.optimizer == "default" or not args.optimizer in optimizers.keys():
-        optimizer_name, optimizer = get_optimizers(args.method, args.model)
-    else:
-        # 아니면 임의의 optimizer
-        optimizer_name, optimizer = optimizers[args.optimizer]
+    # Get Optimizer, Optimzer 세팅
+    optimizer = optims.get_optimizer(args.optimizer, model, args.lr, args.weight_decay)
 
-    # Optimizer 하이퍼 파라미터 설정
-    if optimizer_name == "SGD":
-        # SGD 하이퍼 파라미터
-        optimizer = optimizer(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
-    elif optimizer_name == "LARS":
-        # LARS 하이퍼 파라미터
-        optimizer = optims.Lars(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-6)
-    elif optimizer_name == "AdamW":
-        # AdamW 하이퍼 파라미터
-        if args.lr>0.01: args.lr = 1e-3 #학습불가 방지
-        optimizer = optimizer(model.parameters(), lr=args.lr, weight_decay=0.05)
-
-    # Scheduler에 Optimizer 매핑
-    if optimizer_name == "SGD":
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, T_max=args.epoch * len(train_loader)
-        )
-    elif optimizer_name == "LARS" or optimizer_name == "AdamW":
-        scheduler = optims.CosineAnnealingWarmupRestarts(
-            optimizer,
-            first_cycle_steps = args.epoch * len(train_loader),
-            cycle_mult = 1.0,
-            max_lr = args.lr,
-            min_lr = 1e-6,
-            warmup_steps = int(args.epoch * len(train_loader) * 0.1),
-            gamma = 1.0
-        )
+    # Scheduler 세팅 (CosineAnnealingLR)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer=optimizer, T_max=args.epoch * len(train_loader)
+    )
 
     # 학습!!!!
     train_model(args, test_loader=test_loader, train_loader=train_loader, train_loader2=train_loader2, model=model, optimizer=optimizer, scheduler=scheduler, device=device)
@@ -156,7 +106,7 @@ def train_model(args, test_loader, train_loader, train_loader2, model, optimizer
     print("**START TRAINING**")
     print(f"Model: {args.model}\t\tMethod: {args.method}\t\tDataset: {args.dataset}")
     print(f"Epoch: {args.epoch}\t\tBatch Size: {args.batch_size}")
-    print(f"Optimizer: {args.optimizer}\tScheduler: {args.scheduler}\t\tLR: {args.lr}")
+    print(f"Optimizer: {args.optimizer}\t\tLR: {args.lr}")
     print("="*50)
 
     # 한 Epoch 학습 실행
@@ -306,8 +256,8 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--num_workers", type=int, default=2)
     parser.add_argument("--device", type=str, default=("cuda" if torch.cuda.is_available() else "cpu"))
-    parser.add_argument("--optimizer", type=str, default="default")
-    parser.add_argument("--scheduler", type=str, default="default")
+    parser.add_argument("--optimizer", type=str, default="SGD")
+    parser.add_argument("--weight_decay", type=float, default=1e-3)
     parser.add_argument("--lr", type=float, default=0.1)
 
     args = parser.parse_args()
