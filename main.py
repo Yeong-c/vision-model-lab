@@ -29,28 +29,22 @@ def _main(args):
     img_size = setting["size"]
     input_shape = (setting["channels"], img_size, img_size)
 
-    train_loader, train_loader2, test_loader = dataset.get_dataloader(args.dataset, args.method, args.batch_size, img_size, args.num_workers)
+    # General, Constrastive Transform Type 선택(Method에 따라)
+    if args.method in ["simclr", "moco"]:
+        transform_type = "contrastive"
+    else:
+        transform_type = "general"
 
+    # Type에 맞춰 Data Loader Load
+    train_loader, val_loader, test_loader = dataset.get_dataloader(args.dataset, transform_type, args.batch_size, args.num_workers)
+
+    # Backbone 모델 가져오기
     model = models.get_model(args.model, input_shape)
 
-    # Method를 Model에 씌우기
-    if args.method == "supervised":
-        model = methods.SupervisedLearning(model, num_classes=dataset_num_classes[args.dataset])
-    elif args.method == "simclr":
-        model = methods.SimCLR(model)
-        # SimCLR은 Batch Size에 따라 LR 중요 (중요)
-        args.lr = 0.3 * args.batch_size / 256
-    elif args.method == "rotnet":
-        model = methods.RotNet(model)
-        args.lr = 0.1
-        args.momentum = 0.9
-        args.weight_decay=5e-4
-        args.nesterov=True
-    elif args.method == "moco":
-        model = methods.MoCo(model)
-        args.lr = 0.03
+    # Method를 Model에 씌우기 (최종체)
+    model = methods.wrap_method(args.method, model, num_classes=dataset_num_classes[args.dataset])
 
-    # 완전히 형성된 Model을 Device로
+    # 완전히 구성된 Model을 Device로
     model.to(device)
 
     # Get Optimizer, Optimzer 세팅
@@ -62,7 +56,7 @@ def _main(args):
     )
 
     # 학습!!!!
-    train_model(args, test_loader=test_loader, train_loader=train_loader, train_loader2=train_loader2, model=model, optimizer=optimizer, scheduler=scheduler, device=device)
+    train_model(args, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader, model=model, optimizer=optimizer, scheduler=scheduler, device=device)
 
 def train_one_epoch(args, dataloader, model, optimizer, scheduler, device, epoch_cnt):
     model.train()
@@ -101,7 +95,7 @@ def train_one_epoch(args, dataloader, model, optimizer, scheduler, device, epoch
 
 # Main Training 함수
 # train_one_epoch를 Epoch만큼 반복.
-def train_model(args, test_loader, train_loader, train_loader2, model, optimizer, scheduler, device):
+def train_model(args, train_loader, val_loader, test_loader, model, optimizer, scheduler, device):
     print("="*50)
     print("**START TRAINING**")
     print(f"Model: {args.model}\t\tMethod: {args.method}\t\tDataset: {args.dataset}")
@@ -115,33 +109,11 @@ def train_model(args, test_loader, train_loader, train_loader2, model, optimizer
         train_loss = train_one_epoch(args, train_loader, model, optimizer, scheduler, device, epoch_cnt=ep+1)
         print(f"   [Epoch {ep+1}] Train Loss: {train_loss:.4f}")
 
-
         # Test(Eval) 진행
-        if args.method == "supervised":
-            # supervised면 epoch마다 Accuracy 측정 후 출력
-            acc = test_model_accuracy(args, test_loader, model, device)
-            print(f"   [Epoch {ep+1}] Accuracy: {acc:.2f}%")
-
-        elif args.method == "rotnet":
-            # rotnet이면 Rotation Accuracy랑 Feature Accuracy(KNN) 전부 측정
-            # 대신 KNN은 5 Epoch마다
-
-            # Rotation Acc
-            acc = test_model_accuracy(args, test_loader, model, device)
-            print(f"   [Epoch {ep+1}] Rotation Accuracy: {acc:.2f}%")
-
-            # Feature Acc(KNN)
-            if (ep + 1) % 5 == 0:
-                print("   **Calculating KNN Accuracy**")
-                acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
-                print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
-
-        elif args.method == "simclr"  or args.method == "moco":
-            # 아니면 Epoch 5개마다 KNN으로 측정
-            if (ep + 1) % 5 == 0:
-                print("   **Calculating KNN Accuracy**")
-                acc = test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, 200)
-                print(f"   [Epoch {ep+1}] KNN Accuracy: {acc:.2f}%")
+        acc_result = methods.test_model(args, train_loader, val_loader, test_loader, model, device)
+        # Accuracy Dict로 받아온 값들 전부 출력
+        for key, value in acc_result.items():
+            print(f"   [Epoch {ep+1}] {key}: {value:.2f}%")
 
         # 모델 저장(checkpoint)
         os.makedirs("./checkpoints", exist_ok=True)
@@ -158,91 +130,6 @@ def train_model(args, test_loader, train_loader, train_loader2, model, optimizer
     print("**FINISH TRAINING**")
     print("="*50)
 
-# Accuracy Test 함수
-def test_model_accuracy(args, test_loader, model, device):
-    model.eval()
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for batch in test_loader:
-            x, y = batch
-
-            if args.method=="rotnet":
-                x=x.to(device)
-                x,y=rotate_batch(x,device)
-            else:
-                x, y = x.to(device), y.to(device)
-
-            # Predict로 Output Get
-            output = model.predict(x)
-
-            # Accuracy 계산
-            _, predicted = torch.max(output.data, 1)
-            total += y.size(0)
-            correct += (predicted == y).sum().item()
-            
-    acc = correct / total * 100
-    return acc
-
-# KNN Test 함수
-def test_model_KNN(args, train_loader, train_loader2, test_loader, model, device, K):
-    model.eval()
-    correct = 0
-    total = 0
-
-    train_features = []
-    train_labels = []
-
-    # stl10이면 train_loader2를 사용(unsupervised여도 확인할 땐 labeled로 확인해야 됨)
-    if train_loader2 != None: train_loader = train_loader2
-
-    # Train Set Feature들 저장
-    with torch.no_grad():
-        for batch in train_loader:
-            x, y = batch
-            x, y = x.to(device), y.to(device)
-
-            if x.dim() == 5:
-                x = x[:, 0, :, :, :]
-            
-            # Backbone에 TrainSet 넣어서 Feature 추출 (model.model)
-            feature = model.model(x)
-            # 정규화
-            feature = torch.nn.functional.normalize(feature, dim=1)
-
-            train_features.append(feature)
-            train_labels.append(y)
-
-        train_features = torch.cat(train_features, dim=0).t()
-        train_labels = torch.cat(train_labels, dim=0)
-
-        for batch in test_loader:
-            x, y = batch
-            x, y = x.to(device), y.to(device)
-
-            # Test Feature 추출
-            test_feature = model.model(x)
-            test_feature = torch.nn.functional.normalize(test_feature, dim=1)
-
-            # test feature와 Train Feature들에 대한 거리 계산(행렬곱)
-            # (Test, Dim) X (Dim, Train) -> (Test, Train)
-            sim_matrix = torch.matmul(test_feature, train_features)
-
-            # 제일 가까운 K개 이웃 찾기 (거리, 인덱스)
-            distances, indices = sim_matrix.topk(K, dim=1, largest=True, sorted=True)
-
-            # 인덱스로 라벨 가져오기
-            neighbors = train_labels[indices] # [Batch Size, K]
-
-            # 가장 많이 나온 라벨이 뭐지?
-            knn, _ = torch.mode(neighbors, dim=1)
-
-            total += x.size(0)
-            correct += (knn == y).sum().item()
-        
-    acc = correct / total * 100
-    return acc
 
 
 
