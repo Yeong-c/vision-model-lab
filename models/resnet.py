@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-class NormalBlock(nn.Module):
+class BasicBlock(nn.Module):
     def __init__(self, in_channels, filters, stride=1):
-        super(NormalBlock, self).__init__()
+        super(BasicBlock, self).__init__()
 
         # 3 x 3 Conv
         self.conv1 = nn.Conv2d(in_channels, filters, kernel_size=3, stride=stride, padding=1, bias=False)
@@ -83,70 +83,52 @@ class BottleneckBlock(nn.Module):
         return out
 
 class ResNet(nn.Module):
-    def __init__(self, num_layers=50, input_shape=(3, 32, 32)):
+    def __init__(self, Block=BasicBlock, num_blocks=[2,2,2,2]): # Default 18-layer
         super(ResNet, self).__init__()
 
-        # 입력 차원 관리
-        # 1. 작으면 Channel만 64로 늘려서 Conv 후 Block으로
-        # 2. 크면 7x7 Conv, 3x3 Pooling으로 사이즈 줄이면서 Channel 64로 늘리고 Block으로
-        if input_shape[1] <= 32:
-            self.start = nn.Sequential(
-                nn.Conv2d(input_shape[0], 64, kernel_size=3, stride=1, padding=1),
-                nn.BatchNorm2d(64),
-                nn.ReLU(inplace=True)
-            )
-        elif input_shape[1] <= 64:
-            self.start = nn.Sequential(
-                nn.Conv2d(input_shape[0], 64, kernel_size=3, stride=2, padding=1),
-                nn.BatchNorm2d(64),
-                nn.ReLU(inplace=True)
-            )
-        else:
-            self.start = nn.Sequential(
-                nn.Conv2d(input_shape[0], 64, kernel_size=7, stride=2, padding=3),
-                nn.BatchNorm2d(64),
-                nn.ReLU(inplace=True),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-            )
+        # 32x32 Start (32x32로 고정함)
+        self.start = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True)
+        )
 
-        # num_layers: 18-layer, 50-layer
-        # 18-LAYER
-        if num_layers == 18:
-            self.block1 = self.block18(in_channels=64, filters=64, stride=1)
-            self.block2 = self.block18(in_channels=64, filters=128, stride=2)
-            self.block3 = self.block18(in_channels=128, filters=256, stride=2)
-            self.block4 = self.block18(in_channels=256, filters=512, stride=2)
-            # 결과물 Shape
+        self.blocks = nn.ModuleList()
+
+        # ResNet Block 붙이기
+        # Basic Block
+        # 18-layer: 2 2 2 2, 34-layer: 3 4 6 3
+        if Block == BasicBlock:
+            self.blocks.append(self.BasicBlocks(in_channels=64, filters=64, stride=1, num_blocks=num_blocks[0]))
+            self.blocks.append(self.BasicBlocks(in_channels=64, filters=128, stride=2, num_blocks=num_blocks[1]))
+            self.blocks.append(self.BasicBlocks(in_channels=128, filters=256, stride=2, num_blocks=num_blocks[2]))
+            self.blocks.append(self.BasicBlocks(in_channels=256, filters=512, stride=2, num_blocks=num_blocks[3]))
             self.num_features = 512
-        # 50-LAYER
-        elif num_layers == 50:
-            self.block1 = self.block50(in_channels=64, filters=64, stride=1, num_blocks=3)
-            self.block2 = self.block50(in_channels=256, filters=128, stride=2, num_blocks=4)
-            self.block3 = self.block50(in_channels=512, filters=256, stride=2, num_blocks=6)
-            self.block4 = self.block50(in_channels=1024, filters=512, stride=2, num_blocks=3)
-            # 결과물 Shape
-            self.num_features = 2048
-        # DEFAULT: 50-LAYER
-        else:
-            self.block1 = self.block50(in_channels=64, filters=64, stride=1, num_blocks=3)
-            self.block2 = self.block50(in_channels=256, filters=128, stride=2, num_blocks=4)
-            self.block3 = self.block50(in_channels=512, filters=256, stride=2, num_blocks=6)
-            self.block4 = self.block50(in_channels=1024, filters=512, stride=2, num_blocks=3)
-            # 결과물 Shape
+
+        # Bottleneck Block
+        # 50-layer: 3 4 6 3, 101-layer: 3 4 23 3, 152-layer: 3 8 36 3
+        elif Block == BottleneckBlock:
+            self.blocks.append(self.BottleneckBlocks(in_channels=64, filters=64, stride=1, num_blocks=num_blocks[0]))
+            self.blocks.append(self.BottleneckBlocks(in_channels=256, filters=128, stride=2, num_blocks=num_blocks[1]))
+            self.blocks.append(self.BottleneckBlocks(in_channels=512, filters=256, stride=2, num_blocks=num_blocks[2]))
+            self.blocks.append(self.BottleneckBlocks(in_channels=1024, filters=512, stride=2, num_blocks=num_blocks[3]))
             self.num_features = 2048
 
         # Global Average Pooling
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
-    # ResNet18용 Block - 3x3 2번(Not Bottleneck)
-    def block18(self, in_channels, filters, stride):
-        return nn.Sequential(
-            NormalBlock(in_channels, filters,  stride=stride),
-            NormalBlock(filters, filters, stride=1)
-        )
+    # ResNet18용 Block - 3x3 2번 (Not Bottleneck)
+    def BasicBlocks(self, in_channels, filters, stride, num_blocks):
+        layers = []
+        layers.append(BasicBlock(in_channels, filters,  stride=stride))
+
+        for _ in range(1, num_blocks):
+            layers.append(BasicBlock(filters, filters, stride=1))
+
+        return nn.Sequential(*layers)
 
     # ResNet50용 Block - 1x1 / 3x3 / 1x1 (Bottleneck)
-    def block50(self, in_channels, filters, stride, num_blocks):
+    def BottleneckBlocks(self, in_channels, filters, stride, num_blocks):
         layers = []
         layers.append(BottleneckBlock(in_channels, filters, stride))
 
@@ -162,17 +144,29 @@ class ResNet(nn.Module):
         # conv1 start
         x = self.start(x)
 
-        # conv2_x (output size: 56x56)
-        x = self.block1(x)
-        # conv3_x (output size: 28x28)
-        x = self.block2(x)
-        # conv4_x (output size: 14x14)
-        x = self.block3(x)
-        # conv5_x (output size: 7x7)
-        x = self.block4(x)
+        # conv2_x ~ conv5_x
+        for b in self.blocks:
+            # conv?_x (기존의 block1, block2...)
+            x = b(x)
+
         # avg pooling
         x = self.avgpool(x)
         # flatten(vector)
         x = torch.flatten(x, 1)
 
         return x
+
+def resnet18():
+    return ResNet(Block=BasicBlock, num_blocks=[2, 2, 2, 2])
+
+def resnet34():
+    return ResNet(Block=BasicBlock, num_blocks=[3, 4, 6, 3])
+
+def resnet50():
+    return ResNet(Block=BottleneckBlock, num_blocks=[3, 4, 6, 3])
+
+def resnet101():
+    return ResNet(Block=BottleneckBlock, num_blocks=[3, 4, 23, 3])
+
+def resnet152():
+    return ResNet(Block=BottleneckBlock, num_blocks=[3, 8, 36, 3])

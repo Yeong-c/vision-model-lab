@@ -1,13 +1,12 @@
-from .resnet import ResNet
 from .densenet import DenseNet
 from .vit import ViT
 
+from . import resnet
+
 def get_model(model_name, input_shape):
 
-    if model_name == "resnet18":
-        model = ResNet(num_layers=18, input_shape=input_shape)  
-    elif model_name == "resnet50":
-        model = ResNet(num_layers=50, input_shape=input_shape)
+    if model_name in resnet.__dict__:
+        model = resnet.__dict__[model_name]()
     elif model_name == "densenet":
         model = DenseNet(input_shape=input_shape)
     elif model_name == "vit":
