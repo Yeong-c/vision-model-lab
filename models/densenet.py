@@ -56,40 +56,32 @@ class TransitionLayer(nn.Module):
         return out
 
 class DenseNet(nn.Module):
-    def __init__(self, input_shape=(3, 32, 32), k=12, dblock=(16,16,16), comp = 0.5, bneck = 4):
+    def __init__(self, num_blocks, growth_rate=32, comp = 0.5, bneck = 4):
 
         super(DenseNet, self).__init__()
         #그로우레이트 2배
-        finput = 2*k 
+        finput = 2*growth_rate 
 
-        if input_shape[1] >= 224: #ImageNet
-             self.features = nn.Sequential(
-                nn.Conv2d(3, finput, kernel_size=7, stride=2, padding=3, bias=False),
-                nn.BatchNorm2d(finput),
-                nn.ReLU(inplace=True),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-            )
-        else:
-            self.features = nn.Sequential(
-                nn.Conv2d(3, finput, kernel_size=3, stride=1, padding=1, bias=False)
-            )
+        self.features = nn.Sequential(
+            nn.Conv2d(3, finput, kernel_size=3, stride=1, padding=1, bias=False)
+        )
 
         now_features = finput
 
-        for i, num_Layers in enumerate(dblock):
+        for i, num_Layers in enumerate(num_blocks):
 
             block = DenseBlock(
                 num_Layers=num_Layers, 
                 inputs=now_features,
-                outputs=k, 
+                outputs=growth_rate, 
                 bneck=bneck 
             )
 
             self.features.add_module(f'denseblock{i+1}', block)
             #채널 수 업데이트
-            now_features = now_features + num_Layers * k
+            now_features = now_features + num_Layers * growth_rate
             #트랜지션 레이어 추가
-            if i != len(dblock) - 1:
+            if i != len(num_blocks) - 1:
                 
                 trans_outputs = int(now_features * comp)
                 trans = TransitionLayer(inputs=now_features,
@@ -109,3 +101,20 @@ class DenseNet(nn.Module):
         out = self.avg_pool(features)
         out = torch.flatten(out, 1)
         return out
+
+
+def densenet121():
+    # k=32
+    return DenseNet(num_blocks=[6,12,24,16])
+
+def densenet169():
+    # k=32
+    return DenseNet(num_blocks=[6,12,32,32])
+
+def densenet201():
+    # k=32
+    return DenseNet(num_blocks=[6,12,48,32])
+
+def densenet264():
+    # k=32
+    return DenseNet(num_blocks=[6,12,64,48])
