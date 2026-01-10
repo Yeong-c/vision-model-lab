@@ -1,16 +1,15 @@
-from .densenet import DenseNet
-from .vit import ViT
-
 from . import resnet
+from . import densenet
+from . import vit
 
 def get_model(model_name, input_shape):
 
     if model_name in resnet.__dict__:
         model = resnet.__dict__[model_name]()
-    elif model_name == "densenet":
-        model = DenseNet(input_shape=input_shape)
-    elif model_name == "vit":
-        model = ViT(input_shape=input_shape)
+    elif model_name in densenet.__dict__:
+        model = densenet.__dict__[model_name]()
+    elif model_name in vit.__dict__:
+        model = vit.__dict__[model_name]()
     else:
         raise ValueError(f"null: {model_name}")
     
