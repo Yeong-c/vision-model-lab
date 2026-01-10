@@ -17,23 +17,12 @@ class PatchEmbedding(nn.Module):
         return x
 
 class ViT(nn.Module):
-    def __init__(self, input_shape=(3, 32, 32), outputs=128, num_Layers=6, n_heads=4, dropout=0.1):
+    def __init__(self, outputs, num_Layers, n_heads, patch_size=4, img_size = 32, dropout=0.1):
 
         super(ViT, self).__init__()
 
-        inputs = input_shape[0]
-        img_size = input_shape[1]
-        
-        #패치 사이즈 결정
-        if img_size <= 32:
-            patch_size = 4
-        elif img_size <= 96:
-            patch_size = 8
-        else:
-            patch_size = 16
-
         #패치 임베딩
-        self.patch_embed = PatchEmbedding(inputs, outputs, patch_size, img_size)
+        self.patch_embed = PatchEmbedding(3, outputs, patch_size, img_size)
         now_features = outputs
         #cls랑 포지션
         self.cls_token = nn.Parameter(torch.zeros(1, 1, now_features))
@@ -87,3 +76,18 @@ class ViT(nn.Module):
         out = x[:, 0]
         out = self.norm(out)
         return out
+
+def vit_tiny():
+    return ViT(outputs=192, num_Layers=12, n_heads=3)
+
+def vit_small():
+    return ViT(outputs=384, num_Layers=12, n_heads=6)
+
+def vit_base():
+    return ViT(outputs=768, num_Layers=12, n_heads=12)
+
+def vit_large():
+    return ViT(outputs=1024, num_Layers=24, n_heads=16)
+
+def vit_huge():
+    return ViT(outputs=1280, num_Layers=32, n_heads=16)
