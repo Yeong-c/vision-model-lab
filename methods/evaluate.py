@@ -1,6 +1,23 @@
 import torch
 from . import rotnet
 
+# Test Loss 계산 함수
+def test_loss(test_loader, model, device):
+    model.eval()
+    total_loss = 0.0
+
+    with torch.no_grad():
+        for batch in test_loader:
+            x, y = batch
+            x, y = x.to(device), y.to(device)
+
+            batch_on_device = (x, y)
+
+            loss = model(batch_on_device)
+            total_loss += loss.item()
+    
+    return total_loss / len(test_loader)
+
 # Accuracy 테스트 함수
 # Label 비교를 통해 Accuracy 계산 (Supervised)
 def accuracy(test_loader, model, device):
@@ -64,8 +81,8 @@ def KNN(val_loader, test_loader, model, device):
             x, y = batch
             x, y = x.to(device), y.to(device)
             
-            # Backbone에 TrainSet 넣어서 Feature 추출 (model.model)
-            feature = model.model(x)
+            # Backbone에 TrainSet 넣어서 Feature 추출 (model.encoder)
+            feature = model.encoder(x)
 
             # 정규화
             feature = torch.nn.functional.normalize(feature, dim=1)
@@ -81,7 +98,7 @@ def KNN(val_loader, test_loader, model, device):
             x, y = x.to(device), y.to(device)
 
             # Test Feature 추출
-            test_feature = model.model(x)
+            test_feature = model.encoder(x)
             test_feature = torch.nn.functional.normalize(test_feature, dim=1)
 
             # test feature와 Train Feature들에 대한 거리 계산(행렬곱)

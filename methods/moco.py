@@ -16,6 +16,8 @@ class MoCo(nn.Module):
         self.encoder_q = encoder
         self.encoder_k = copy.deepcopy(encoder)
 
+        self.encoder = self.encoder_q # encoder 접근용
+
         # 2. Projection Head 추가 (MoCo v2 내용 반영)
         self.projector_q = nn.Sequential(
             nn.Linear(encoder.num_features, encoder.num_features),

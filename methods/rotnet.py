@@ -25,21 +25,21 @@ def rotate_batch(images, device):
 
 
 class RotNet(nn.Module):
-    def __init__(self, backbone):
+    def __init__(self, encoder):
         super().__init__()
-        self.backbone = backbone
+        self.encoder = encoder
 
         # Loss Function
         self.criterion = nn.CrossEntropyLoss()
 
         # classifier 4개 각도
-        self.classifier = nn.Linear(backbone.num_features, 4)
+        self.classifier = nn.Linear(encoder.num_features, 4)
 
     def forward(self, batch):
         x, _ = batch
         inputs, labels = rotate_batch(x, x.device)
 
-        features = self.backbone(inputs)
+        features = self.encoder(inputs)
         logits = self.classifier(features)
 
         loss = self.criterion(logits, labels)
@@ -47,6 +47,6 @@ class RotNet(nn.Module):
         return loss
     
     def predict(self, x):
-        features = self.backbone(x)
+        features = self.encoder(x)
         logits = self.classifier(features)
         return logits

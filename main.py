@@ -2,7 +2,9 @@ import argparse
 import os
 import torch
 import models, methods, dataset, optims # 우리 것들
-import tqdm, math
+import tqdm
+from datetime import datetime
+from torch.utils.tensorboard import SummaryWriter
 
 #rotnet 평가용
 from methods.rotnet import rotate_batch
@@ -103,34 +105,99 @@ def train_model(args, train_loader, val_loader, test_loader, model, optimizer, s
     print(f"Optimizer: {args.optimizer}\t\tLR: {args.lr}")
     print("="*50)
 
+    # 실험 저장 폴더 생성
+    os.makedirs("./experiments", exist_ok=True) # experiments 폴더 생성
+
+    # 실험 이름, 시간 기록
+    start_time = datetime.now().strftime("%Y%m%d_%H%M")
+    exp_name = f"{start_time}_{args.model}_{args.method}_{args.dataset}"
+    exp_dir = f"./experiments/{exp_name}"
+
+    # 실험 저장용 개별 폴더 생성
+    os.makedirs(f"{exp_dir}", exist_ok=True)
+
+    # 실험 Arguments 파일로 저장
+    save_arguments(exp_dir, exp_name, start_time, args)
+
+    # [Logging] TensorBoard Writer 생성
+    writer = SummaryWriter(log_dir=f"{exp_dir}/logs")
+
+    # Best Accuracy 기록용
+    best_all_acc = 0.0
+
     # 한 Epoch 학습 실행
     for ep in range(args.epoch):
         # 1 Epoch 학습 후 Train Loss 출력
         train_loss = train_one_epoch(args, train_loader, model, optimizer, scheduler, device, epoch_cnt=ep+1)
         print(f"   [Epoch {ep+1}] Train Loss: {train_loss:.4f}")
 
+        # [Logging] Train Loss 기록
+        writer.add_scalar("Loss/Train", train_loss, ep)
+
         # Test(Eval) 진행
-        acc_result = methods.test_model(args, train_loader, val_loader, test_loader, model, device)
+        test_loss, acc_result = methods.test_model(args, train_loader, val_loader, test_loader, model, device)
+
+        # Test Loss 출력
+        print(f"   [Epoch {ep+1}] Test Loss: {test_loss:.4f}")
+
+        # [Logging] Test Loss 기록
+        writer.add_scalar("Loss/Test", test_loss, ep)
+
+        all_acc = 0.0
+
         # Accuracy Dict로 받아온 값들 전부 출력
         for key, value in acc_result.items():
+            all_acc += value
+
             print(f"   [Epoch {ep+1}] {key}: {value:.2f}%")
+            # [Logging] Accuracy 기록
+            writer.add_scalar(f"Accuracy/{key}", value, ep)
 
-        # 모델 저장(checkpoint)
-        os.makedirs("./checkpoints", exist_ok=True)
-        save_path = f"./checkpoints/{args.model}_{args.method}_{args.dataset}.pth"
+        # [Logging] Learning Rate 기록 (CosineAnnealing 확인용)
+        writer.add_scalar("Params/Learning_Rate", optimizer.param_groups[0]["lr"], ep)
 
-        # 계속 덮어쓰기
-        if args.method == "supervised":
-            torch.save(model.state_dict(), save_path)
-        else:
-            # Supervised 아닌건 Backbone State를 저장
-            torch.save(model.model.state_dict(), save_path)
+        # Last Checkpoint 저장
+        save_checkpoint(exp_dir, "last", ep, model, optimizer, scheduler, all_acc, False)
+
+        # Best Accuracy Update
+        if all_acc > best_all_acc:
+            best_all_acc = all_acc
+            # Best Checkpoint 저장
+            save_checkpoint(exp_dir, "best", ep, model, optimizer, scheduler, all_acc, False if args.method == "supervised" else True)
 
     print("="*50)
     print("**FINISH TRAINING**")
     print("="*50)
 
+def save_arguments(dir, exp_name, start_time, args):
+    # arguments 파일로 저장
+    with open(f"{dir}/args.txt", "w") as f:
+        f.write(f"Experiment Name: {exp_name}\n")
+        f.write(f"Start Time: {start_time}\n")
+        f.write("="*50 + "\n")
+        f.write(f"Model: {args.model}\n")
+        f.write(f"Method: {args.method}\n")
+        f.write(f"Dataset: {args.dataset}\n")
+        f.write(f"Epoch: {args.epoch}\n")
+        f.write(f"Batch Size: {args.batch_size}\n")
+        f.write(f"Learning Rate: {args.lr}\n")
+        f.write(f"Optimizer: {args.optimizer}\n")
+        f.write(f"Weight Decay: {args.weight_decay}\n")
 
+def save_checkpoint(dir, checkpoint_name, epoch, model, optimizer, scheduler, score, only_encoder=False):
+    # Full Model 저장 / Encoder 저장
+    # Encoder 저장하는데, 실제 Encoder가 있으면
+    if only_encoder and hasattr(model, "encoder"):
+        model = model.encoder
+    checkpoint = {
+        "epoch": epoch + 1,
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(),
+        "scheduler_state_dict": scheduler.state_dict(),
+        "score": score
+    }
+
+    torch.save(checkpoint, f"{dir}/{checkpoint_name}.pth")
 
 
 # Argument Parsing
