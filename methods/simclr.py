@@ -31,19 +31,19 @@ class NTXentLoss(nn.Module):
         return loss / (2 * N)
 
 class SimCLR(nn.Module):
-    def __init__(self, model):
+    def __init__(self, encoder):
         super().__init__()
-        self.model = model
+        self.encoder = encoder
 
         # Loss Function NT-Xent
         self.criterion = NTXentLoss(temperature=0.5)
 
-        # Projection Head(+ MLP)
-        self.head = nn.Sequential(
-            nn.Linear(model.num_features, model.num_features),
-            nn.BatchNorm1d(model.num_features),
+        # Projection projector(+ MLP)
+        self.projector = nn.Sequential(
+            nn.Linear(encoder.num_features, encoder.num_features),
+            nn.BatchNorm1d(encoder.num_features),
             nn.ReLU(),
-            nn.Linear(model.num_features, 128)
+            nn.Linear(encoder.num_features, 128)
         )
 
     def forward(self, batch):
@@ -53,16 +53,16 @@ class SimCLR(nn.Module):
         x = x.reshape(-1, *x.shape[2:])
 
         # Representation
-        h = self.model(x)
+        h = self.encoder(x)
 
         # Projection
-        z = self.head(h)
+        z = self.projector(h)
 
         # Loss Function (NT-Xent)
         loss = self.criterion(z)
         return loss
     
     def predict(self, x):
-        features = self.model(x)
-        output = self.head(features)
+        features = self.encoder(x)
+        output = self.projector(features)
         return output

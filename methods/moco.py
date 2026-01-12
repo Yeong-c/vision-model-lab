@@ -3,7 +3,7 @@ import torch.nn as nn
 import copy
 
 class MoCo(nn.Module):
-    def __init__(self, model, dim=128, K=4096, m=0.999, T=0.07):
+    def __init__(self, encoder, dim=128, K=4096, m=0.999, T=0.07):
         
         # dim:(dimension), K:(Dictionary Size), m:(momentum), T:(temperature)
 
@@ -13,19 +13,19 @@ class MoCo(nn.Module):
         self.T = T
 
         # 1. 쿼리(Query) 인코더, 키(Key) 인코더
-        self.encoder_q = model
-        self.encoder_k = copy.deepcopy(model)
+        self.encoder_q = encoder
+        self.encoder_k = copy.deepcopy(encoder)
 
         # 2. Projection Head 추가 (MoCo v2 내용 반영)
-        self.head_q = nn.Sequential(
-            nn.Linear(model.num_features, model.num_features),
+        self.projector_q = nn.Sequential(
+            nn.Linear(encoder.num_features, encoder.num_features),
             nn.ReLU(inplace=True),
-            nn.Linear(model.num_features, dim)
+            nn.Linear(encoder.num_features, dim)
         )
-        self.head_k = nn.Sequential(
-            nn.Linear(model.num_features, model.num_features),
+        self.projector_k = nn.Sequential(
+            nn.Linear(encoder.num_features, encoder.num_features),
             nn.ReLU(inplace=True),
-            nn.Linear(model.num_features, dim)
+            nn.Linear(encoder.num_features, dim)
         )
 
         # 3. Key 인코더와 Head는 그래디언트 계산 안 함 
@@ -33,7 +33,7 @@ class MoCo(nn.Module):
             param_k.data.copy_(param_q.data)  # 값 복사
             param_k.requires_grad = False     # Key는 업데이트 안 함
             
-        for param_q, param_k in zip(self.head_q.parameters(), self.head_k.parameters()):
+        for param_q, param_k in zip(self.projector_q.parameters(), self.projector_k.parameters()):
             param_k.data.copy_(param_q.data)
             param_k.requires_grad = False
 
@@ -55,7 +55,7 @@ class MoCo(nn.Module):
             param_k.data = param_k.data * self.m + param_q.data * (1. - self.m)
         
         # Projection Head 업데이트
-        for param_q, param_k in zip(self.head_q.parameters(), self.head_k.parameters()):
+        for param_q, param_k in zip(self.projector_q.parameters(), self.projector_k.parameters()):
             param_k.data = param_k.data * self.m + param_q.data * (1. - self.m)
 
     @torch.no_grad()
@@ -95,7 +95,7 @@ class MoCo(nn.Module):
 
         # 1. Query 계산
         q = self.encoder_q(im_q) # Backbone
-        q = self.head_q(q)       # Projection
+        q = self.projector_q(q)       # Projection
         q = nn.functional.normalize(q, dim=1)
 
         # 2. Key 계산 (Gradient 계산 X)
@@ -107,7 +107,7 @@ class MoCo(nn.Module):
 
             # Encoder Forward (섞인 이미지로 인코딩)
             k = self.encoder_k(im_k_shuffled)
-            k = self.head_k(k)
+            k = self.projector_k(k)
             k = nn.functional.normalize(k, dim=1)
 
             # Unshuffle
@@ -136,4 +136,4 @@ class MoCo(nn.Module):
 
     def predict(self, x):
         features = self.encoder_q(x) 
-        return self.head_q(features)
+        return self.projector_q(features)
