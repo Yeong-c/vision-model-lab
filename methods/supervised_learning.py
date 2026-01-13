@@ -5,8 +5,8 @@ class SupervisedLearning(nn.Module):
         super().__init__()
         self.encoder = encoder
 
-        # Head(Classifier)
-        self.head = nn.Linear(encoder.num_features, num_classes)
+        # classifier(Classifier)
+        self.classifier = nn.Linear(encoder.num_features, num_classes)
 
         # Loss Function
         self.criterion = nn.CrossEntropyLoss()
@@ -16,7 +16,7 @@ class SupervisedLearning(nn.Module):
         # Features 추출
         features = self.encoder(x)
         # Outputs
-        output = self.head(features)
+        output = self.classifier(features)
         # Loss 계산
         loss = self.criterion(output, y)
 
@@ -24,5 +24,5 @@ class SupervisedLearning(nn.Module):
     
     def predict(self, x):
         features = self.encoder(x)
-        output = self.head(features)
+        output = self.classifier(features)
         return output

@@ -210,7 +210,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--num_workers", type=int, default=2)
     parser.add_argument("--device", type=str, default=("cuda" if torch.cuda.is_available() else "cpu"))
-    parser.add_argument("--optimizer", type=str, default="SGD")
+    parser.add_argument("--optimizer", type=str, default="SGD", choices=["SGD", "AdamW"]) 
     parser.add_argument("--weight_decay", type=float, default=1e-3)
     parser.add_argument("--lr", type=float, default=0.1)
 
