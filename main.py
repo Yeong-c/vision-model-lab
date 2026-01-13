@@ -3,7 +3,7 @@ import os
 import torch
 import models, methods, dataset, optims # 우리 것들
 import tqdm
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from torch.utils.tensorboard import SummaryWriter
 
 #rotnet 평가용
@@ -109,7 +109,7 @@ def train_model(args, train_loader, val_loader, test_loader, model, optimizer, s
     os.makedirs("./experiments", exist_ok=True) # experiments 폴더 생성
 
     # 실험 이름, 시간 기록
-    start_time = datetime.now().strftime("%Y%m%d_%H%M")
+    start_time = datetime.now(timezone(timedelta(hours=9))).strftime("%Y%m%d_%H%M") #KST로
     exp_name = f"{start_time}_{args.model}_{args.method}_{args.dataset}"
     exp_dir = f"./experiments/{exp_name}"
 

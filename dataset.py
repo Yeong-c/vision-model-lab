@@ -72,8 +72,8 @@ def get_dataloader(dataset_name, type, batch_size, num_workers):
         test_set = Dataset("./data/imagenet/val", transform=test_transform)
     
     # 테스트 용 데이터셋 축소
-    train_set, _ = torch.utils.data.random_split(train_set, [500, 49500])
-    test_set, _ = torch.utils.data.random_split(test_set, [500, 9500])
+    #train_set, _ = torch.utils.data.random_split(train_set, [500, 49500])
+    #test_set, _ = torch.utils.data.random_split(test_set, [500, 9500])
 
     # DataLoader 생성
     train_loader = DataLoader(train_set, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
