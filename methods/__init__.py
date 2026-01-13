@@ -5,18 +5,18 @@ from .moco import MoCo
 
 from . import evaluate
 
-def wrap_method(method_name, backbone, num_classes):
+def wrap_method(method_name, encoder, num_classes):
     if method_name == "supervised":
-        model = SupervisedLearning(backbone, num_classes)
+        model = SupervisedLearning(encoder, num_classes)
     elif method_name == "simclr":
-        model = SimCLR(backbone)
+        model = SimCLR(encoder)
         # SimCLR은 Batch Size에 따라 LR 중요 (중요)
         # args.lr = 0.3 * args.batch_size / 256
     elif method_name == "rotnet":
-        model = RotNet(backbone)
+        model = RotNet(encoder)
         #rotnet args.lr = 0.1, args.momentum = 0.9, args.weight_decay=5e-4, args.nesterov=True
     elif method_name == "moco":
-        model = MoCo(backbone)
+        model = MoCo(encoder)
         #moco args.lr = 0.03
     
     return model
