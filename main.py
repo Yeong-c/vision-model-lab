@@ -32,7 +32,7 @@ def _main(args):
     input_shape = (setting["channels"], img_size, img_size)
 
     # General, Constrastive Transform Type 선택(Method에 따라)
-    if args.method in ["simclr", "moco"]:
+    if args.method in ["simclr", "moco", "simsiam"]:
         transform_type = "contrastive"
     else:
         transform_type = "general"
