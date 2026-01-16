@@ -2,6 +2,7 @@ from .supervised_learning import SupervisedLearning
 from .simclr import SimCLR
 from .rotnet import RotNet
 from .moco import MoCo
+from .simsiam import SimSiam
 
 from . import evaluate
 
@@ -18,7 +19,9 @@ def wrap_method(method_name, encoder, num_classes):
     elif method_name == "moco":
         model = MoCo(encoder)
         #moco args.lr = 0.03
-    
+    elif method_name == "simsiam":
+        model = SimSiam(encoder)
+        #lr=0.05~0.1, momentum=0.9, weight_decay=1e-4
     return model
 
 # test_model 함수
@@ -32,7 +35,7 @@ def test_model(args, train_loader, val_loader, test_loader, model, device):
     elif args.method in ["rotnet"]:
         acc_result["Rotation Accuracy"] = evaluate.rot_accuracy(test_loader, model, device)
         acc_result["KNN Accuracy"] = evaluate.KNN(val_loader, test_loader, model, device)
-    elif args.method in ["simclr", "moco"]:
+    elif args.method in ["simclr", "moco", "simsiam"]:
         acc_result["KNN Accuracy"] = evaluate.KNN(val_loader, test_loader, model, device)
 
     return test_loss, acc_result
