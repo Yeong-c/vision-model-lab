@@ -1,6 +1,8 @@
 from . import resnet
 from . import densenet
 from . import vit
+from . import convmixer
+from . import mlpmixer
 
 def get_model(model_name, input_shape):
 
@@ -10,6 +12,10 @@ def get_model(model_name, input_shape):
         model = densenet.__dict__[model_name]()
     elif model_name in vit.__dict__:
         model = vit.__dict__[model_name]()
+    elif model_name in convmixer.__dict__:
+         model = convmixer.__dict__[model_name]()
+    elif model_name in mlpmixer.__dict__:
+         model = mlpmixer.__dict__[model_name]()
     else:
         raise ValueError(f"null: {model_name}")
     
