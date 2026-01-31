@@ -32,7 +32,7 @@ class RAE_Disc(nn.Module):
     def __init__(self):
         super().__init__()
         # Discriminator
-        self.disc = torch.hub.load('facebookresearch/dinov2', "dinov2_vits8")
+        self.disc = torch.hub.load('facebookresearch/dinov2', "dinov2_vits14")
         for p in self.disc.parameters():
             p.requires_grad = False
 
@@ -41,12 +41,11 @@ class RAE_Disc(nn.Module):
     def forward(self, x):
         x = nn.functional.interpolate(x, size=(224, 224), mode='area')
 
-        with torch.no_grad():
-            feature = self.disc.get_intermediate_layers(x, n=1)[0]
-            feature = feature.transpose(1, 2)
+        feature = self.disc.get_intermediate_layers(x, n=1)[0]
+        feature = feature.transpose(1, 2)
 
         logit = self.disc_head(feature)
-        return logit.view(x.size(0), 256)
+        return logit.view(x.size(0), -1)
 
 
 
@@ -62,8 +61,10 @@ class RAE_Method(nn.Module):
         # LPIPS (w:1.0)
         self.lpips_loss = lpips.LPIPS(net='alex')
 
-        # GAN을 사용하는지
-        self.is_GAN = False
+        # Discriminator을 사용하는지
+        self.useDisc = False
+        # GAN Loss를 더하는지
+        self.useGANLoss = False
         # GAN
         self.GAN = RAE_Disc()
     
@@ -79,29 +80,53 @@ class RAE_Method(nn.Module):
         lambda_weight = torch.clamp(lambda_weight, 0.0, 1e4).detach()
 
         return lambda_weight
+    
+    # GAN Disc 업데이트 위한 Hinge Loss
+    def hinge_loss(self, logits_real, logits_fake):
+        loss_real = torch.mean(nn.functional.relu(1.0 - logits_real))
+        loss_fake = torch.mean(nn.functional.relu(1.0 + logits_fake))
+        return loss_real + loss_fake
+    
+    # LPIPS 위한 Denormalize
+    def denormalize(self, tensor):
+        mean = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1).to(tensor.device)
+        std = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1).to(tensor.device)
+        return tensor * std + mean
 
     def forward(self, batch):
-        x, y = batch
+        x = batch
         # Input Image Target
-        in_image = nn.functional.interpolate(x, size=(256, 256), mode='bicubic')
+        in_image_norm = nn.functional.interpolate(x, size=(256, 256), mode='bicubic')
+        in_image = self.denormalize(in_image_norm)
 
         # Image(Encoder -> Decoder) 압축 후 복원
         # Out Image
-        out_image = self.AE(x)
+        out_image_raw = self.AE(x)
+        out_image = self.denormalize(out_image_raw)
 
-        # Loss 계산
+        # ㅣ1 Loss 계산
         l1_loss = self.l1_loss(in_image, out_image)
-        lpips_loss = self.lpips_loss(in_image, out_image)
 
-        # GAN(is_GAN이라면)
-        if self.is_GAN:
-            logits = self.GAN(out_image)
-            gan_loss = -torch.mean(logits)
-        ##################
-        ##################
-        # 여기 Hinge Loss 구하는 거 추가해야됨
+        # LPIPS Loss 계산
+        lpips_in = in_image * 2 - 1
+        lpips_out = out_image * 2 - 1
+        lpips_loss = self.lpips_loss(lpips_in, lpips_out).mean()
 
-        return loss
+        total_loss = 0.5 * l1_loss + lpips_loss
+        logits_fake = None
+
+        # GAN
+        # 6, 7 에포크부터 useDisc True: Discriminator 사용(별도로 학습)
+        # 8 에포크부터 useGANLoss True: GAN Loss가 디코더 학습에 관여
+        if self.useDisc:
+            logits_fake = self.GAN(out_image)
+            if self.useGANLoss:
+                gan_loss = -torch.mean(logits_fake)
+                lam = self.calculate_lambda(total_loss, gan_loss, self.AE.final_layer[1].weight)
+
+                total_loss = total_loss + 0.75 * lam * gan_loss
+
+        return total_loss, out_image, logits_fake
     
     def predict(self, x):
         image = self.AE(x)
