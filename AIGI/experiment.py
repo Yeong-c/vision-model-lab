@@ -32,7 +32,7 @@ def _main(args):
         evaluator = AerobladeEvaluator(model, device)
         
         # 경로 설정
-        REAL_PATH = os.path.expanduser("./data/imagenet/imagenet_500")
+        REAL_PATH = os.path.expanduser("./data/imagenet_500")
         FAKE_ROOT = os.path.expanduser("./data/genimage_subset/genimage")        
         
         if not os.path.exists(REAL_PATH):
