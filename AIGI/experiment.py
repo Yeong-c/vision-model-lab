@@ -1,72 +1,55 @@
 import torch
 import sys
 import os, argparse
-from torchvision import transforms
-from PIL import Image
 from methods.aeroblade import AerobladeEvaluator
 
-# RAE 폴더 내의 모듈(decoder, encoder) 임포트를 위해 경로 추가
+# RAE 폴더 모듈 경로 추가
 sys.path.append(os.path.join(os.path.dirname(__file__), "RAE"))
-
 from RAE.rae import RAE
 
 def get_rae():
-    # config.json 경로
     DECODER_CONFIG_DIR = "./RAE/configs"
-    
-    # Pre-trained Weight 경로(decoder_model.pt)
     PRETRAINED_WEIGHTS = "./RAE/models/decoder_model.pt"
-    
-    # DINOv2wRegBase
     ENCODER_ID = "facebook/dinov2-with-registers-base"
 
-    # RAE 객체 생성
     model = RAE(
         encoder_cls='Dinov2withNorm',
         encoder_config_path=ENCODER_ID,
-        encoder_params={
-            'dinov2_path': ENCODER_ID, 
-            'normalize': True
-        },
+        encoder_params={'dinov2_path': ENCODER_ID, 'normalize': True},
         decoder_config_path=DECODER_CONFIG_DIR,
         pretrained_decoder_path=PRETRAINED_WEIGHTS,
         reshape_to_2d=True,
-        noise_tau=0.0 # 그냥 통과용이라 노이즈 X
+        noise_tau=0.0
     )
-    
     return model
 
 def _main(args):
-    # 모델
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = get_rae().to(device)
     model.eval()
     
     if args.method.lower() == "aeroblade":
-        evaluator = AerobladeEvaluator(model, device)   
+        evaluator = AerobladeEvaluator(model, device)
+        
+        # 경로 설정
         REAL_PATH = os.path.expanduser("~/.study/syungkyu/data/imagenet-1k")
         FAKE_ROOT = os.path.expanduser("~/.study/syungkyu/data/genimage_subset/genimage")        
-        # 실험 실행
-        evaluator.run_experiment(REAL_PATH, FAKE_ROOT)
-
+        
         if not os.path.exists(REAL_PATH):
-            print("Real Path not found!")
+            print(f"Error: Real path not found {REAL_PATH}")
             return
         if not os.path.exists(FAKE_ROOT):
-            print("Fake Root not found!")
+            print(f"Error: Fake root not found {FAKE_ROOT}")
             return
+
+        evaluator.run_experiment(REAL_PATH, FAKE_ROOT)
         
     elif args.method.lower() == "rigid":
-
-    
-
         pass
 
 if __name__ == "__main__":
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--method", type=str, default="none")
-
     args = parser.parse_args()
 
     if args.method.lower() not in ["aeroblade", "rigid"]:
@@ -74,10 +57,3 @@ if __name__ == "__main__":
         exit()
 
     _main(args)
-
-    # 할 것
-    # 데이터셋 데이터로더
-    # 이미지 받아서 모델 통과
-    # 로스 확인 등
-
-    # 256x256 입력
