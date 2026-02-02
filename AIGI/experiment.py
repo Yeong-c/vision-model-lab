@@ -3,6 +3,7 @@ import sys
 import os, argparse
 from torchvision import transforms
 from PIL import Image
+from methods.aeroblade import AerobladeEvaluator
 
 # RAE 폴더 내의 모듈(decoder, encoder) 임포트를 위해 경로 추가
 sys.path.append(os.path.join(os.path.dirname(__file__), "RAE"))
@@ -39,15 +40,26 @@ def _main(args):
     # 모델
     model = get_rae().to(device)
     model.eval()
+    
+    if args.method.lower() == "aeroblade":
+        evaluator = AerobladeEvaluator(model, device)   
+        REAL_PATH = os.path.expanduser("~/.study/syungkyu/data/imagenet-1k")
+        FAKE_ROOT = os.path.expanduser("~/.study/syungkyu/data/genimage_subset/genimage")        
+        # 실험 실행
+        evaluator.run_experiment(REAL_PATH, FAKE_ROOT)
 
-    """
-    RAE는 생성 후 aeroblade(model) 식으로
-    혹은 rigid() <- 이건 그냥 RAE 참고해서 DINO 불러서 쓰면 될 듯
-    """
+        if not os.path.exists(REAL_PATH):
+            print("Real Path not found!")
+            return
+        if not os.path.exists(FAKE_ROOT):
+            print("Fake Root not found!")
+            return
+        
+    elif args.method.lower() == "rigid":
 
     
 
-    pass
+        pass
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
