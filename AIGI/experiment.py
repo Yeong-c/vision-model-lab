@@ -32,8 +32,8 @@ def _main(args):
         evaluator = AerobladeEvaluator(model, device)
         
         # 경로 설정
-        REAL_PATH = os.path.expanduser("~/.study/syungkyu/data/imagenet_500")
-        FAKE_ROOT = os.path.expanduser("~/.study/syungkyu/data/genimage_subset/genimage")        
+        REAL_PATH = os.path.expanduser("./data/imagenet/imagenet_500")
+        FAKE_ROOT = os.path.expanduser("./data/genimage_subset/genimage")        
         
         if not os.path.exists(REAL_PATH):
             print(f"Error: Real path not found {REAL_PATH}")
