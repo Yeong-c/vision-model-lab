@@ -39,7 +39,7 @@ class RAE_Disc(nn.Module):
         self.disc_head = DiscHead(embed_dim=self.disc.embed_dim)
 
     def forward(self, x):
-        x = nn.functional.interpolate(x, size=(224, 224), mode='area')
+        x = nn.functional.interpolate(x, size=(224, 224), mode='bicubic')
 
         feature = self.disc.get_intermediate_layers(x, n=1)[0]
         feature = feature.transpose(1, 2)
@@ -67,6 +67,14 @@ class RAE_Method(nn.Module):
         self.useGANLoss = False
         # GAN
         self.GAN = RAE_Disc()
+
+        # lambda 계산
+        self.lam = 0.0
+        # lambda 계산 flag
+        self.update_lambda = False
+
+        self.register_buffer("mean", torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1))
+        self.register_buffer("std", torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1))
     
     # L_GAN에 곱해지는 Lambda 계산
     def calculate_lambda(self, loss, gan_loss, last_layer):
@@ -77,7 +85,7 @@ class RAE_Method(nn.Module):
 
         # 논문 식대로 계산
         lambda_weight = torch.norm(l_grads) / (torch.norm(g_grads) + 1e-4)
-        lambda_weight = torch.clamp(lambda_weight, 0.0, 1e4).detach()
+        lambda_weight = torch.clamp(lambda_weight, 0.0, 1.0).detach()
 
         return lambda_weight
     
@@ -89,15 +97,13 @@ class RAE_Method(nn.Module):
     
     # LPIPS 위한 Denormalize
     def denormalize(self, tensor):
-        mean = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1).to(tensor.device)
-        std = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1).to(tensor.device)
-        return tensor * std + mean
+        return tensor * self.std + self.mean
 
     def forward(self, batch):
         x = batch
+
         # Input Image Target
-        in_image_norm = nn.functional.interpolate(x, size=(256, 256), mode='bicubic')
-        in_image = self.denormalize(in_image_norm)
+        in_image = self.denormalize(x)
 
         # Image(Encoder -> Decoder) 압축 후 복원
         # Out Image
@@ -112,21 +118,36 @@ class RAE_Method(nn.Module):
         lpips_out = out_image * 2 - 1
         lpips_loss = self.lpips_loss(lpips_in, lpips_out).mean()
 
-        total_loss = 0.5 * l1_loss + lpips_loss
+        total_loss = 1.5 * l1_loss + lpips_loss
         logits_fake = None
+
+
 
         # GAN
         # 6, 7 에포크부터 useDisc True: Discriminator 사용(별도로 학습)
         # 8 에포크부터 useGANLoss True: GAN Loss가 디코더 학습에 관여
         if self.useDisc:
-            logits_fake = self.GAN(out_image)
+            logits_fake = self.GAN(out_image_raw)
             if self.useGANLoss:
                 gan_loss = -torch.mean(logits_fake)
-                lam = self.calculate_lambda(total_loss, gan_loss, self.AE.final_layer[1].weight)
+                
+                if self.update_lambda: self.lam = self.calculate_lambda(total_loss, gan_loss, self.AE.final_layer[1].weight)
 
-                total_loss = total_loss + 0.75 * lam * gan_loss
+                total_loss = total_loss + 0.75 * self.lam * gan_loss
 
-        return total_loss, out_image, logits_fake
+        # Dict 저장
+        loss_dict = {
+            "l1_loss": l1_loss.detach(),
+            "lpips_loss": lpips_loss.detach(),
+            "total_loss": total_loss
+        }
+
+        if self.useDisc:
+            loss_dict["logits_fake"] = logits_fake.detach().mean()
+            if self.useGANLoss:
+                loss_dict["gan_loss"] = gan_loss.detach()
+
+        return loss_dict, out_image, logits_fake
     
     def predict(self, x):
         image = self.AE(x)

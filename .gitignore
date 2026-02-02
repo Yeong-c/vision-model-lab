@@ -4,4 +4,6 @@
 **/.DS_Store
 /experiments/
 /temp/
-/AIGI/
+/rae_train/
+/AIGI/data/
+/AIGI/RAE/models/
