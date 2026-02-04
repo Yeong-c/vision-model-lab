@@ -60,6 +60,11 @@ class Dinov2withNorm(nn.Module):
         unused_token_num = 5  # 1 CLS + 4 register tokens
         image_features = x.last_hidden_state[:, unused_token_num:]
         return image_features
+    
+    def full_forward(self, x):
+        x = self.encoder(x, output_hidden_states=True)
+        image_features = x.last_hidden_state
+        return image_features
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.dinov2_forward(x)
