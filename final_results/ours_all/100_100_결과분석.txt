@@ -1,0 +1,449 @@
+
+▶ Folder: eval_20260218_0252_adm_5000_5000
+   - Dataset         : adm
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9613
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.8992
+   - Real/Fake Acc   : 0.9020 / 0.8964
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.0412
+   - Best Balanced Acc: 0.9001
+   - Potential Gain  : +0.0009
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0252_biggan_5000_5000
+   - Dataset         : biggan
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9970
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9506
+   - Real/Fake Acc   : 0.9014 / 0.9998
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 1.2241
+   - Best Balanced Acc: 0.9813
+   - Potential Gain  : +0.0307
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0253_glide_5000_5000
+   - Dataset         : glide
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9973
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9496
+   - Real/Fake Acc   : 0.9028 / 0.9964
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 1.5799
+   - Best Balanced Acc: 0.9789
+   - Potential Gain  : +0.0293
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0254_midjourney_5000_5000
+   - Dataset         : midjourney
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9429
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.8712
+   - Real/Fake Acc   : 0.8962 / 0.8462
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.0994
+   - Best Balanced Acc: 0.8732
+   - Potential Gain  : +0.0020
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0255_sdv4_5000_5000
+   - Dataset         : sdv4
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9848
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9360
+   - Real/Fake Acc   : 0.8994 / 0.9726
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.5522
+   - Best Balanced Acc: 0.9421
+   - Potential Gain  : +0.0061
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0257_sdv5_5000_5000
+   - Dataset         : sdv5
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9845
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9336
+   - Real/Fake Acc   : 0.8936 / 0.9736
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.4990
+   - Best Balanced Acc: 0.9415
+   - Potential Gain  : +0.0079
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0258_vqdm_5000_5000
+   - Dataset         : vqdm
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9452
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.8724
+   - Real/Fake Acc   : 0.8946 / 0.8502
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.2243
+   - Best Balanced Acc: 0.8763
+   - Potential Gain  : +0.0039
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0259_wukong_5000_5000
+   - Dataset         : wukong
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.9606
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.8963
+   - Real/Fake Acc   : 0.8994 / 0.8932
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.0634
+   - Best Balanced Acc: 0.8973
+   - Potential Gain  : +0.0010
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0301_adm_5000_5000
+   - Dataset         : adm
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9838
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9229
+   - Real/Fake Acc   : 0.9618 / 0.8840
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.7799
+   - Best Balanced Acc: 0.9375
+   - Potential Gain  : +0.0146
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0302_biggan_5000_5000
+   - Dataset         : biggan
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9993
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9808
+   - Real/Fake Acc   : 0.9616 / 1.0000
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 1.9204
+   - Best Balanced Acc: 0.9934
+   - Potential Gain  : +0.0126
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0303_glide_5000_5000
+   - Dataset         : glide
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9990
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9786
+   - Real/Fake Acc   : 0.9612 / 0.9960
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 1.4955
+   - Best Balanced Acc: 0.9883
+   - Potential Gain  : +0.0097
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0304_midjourney_5000_5000
+   - Dataset         : midjourney
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9742
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9080
+   - Real/Fake Acc   : 0.9584 / 0.8576
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -1.1457
+   - Best Balanced Acc: 0.9218
+   - Potential Gain  : +0.0138
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0306_sdv4_5000_5000
+   - Dataset         : sdv4
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9970
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9753
+   - Real/Fake Acc   : 0.9594 / 0.9912
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.1954
+   - Best Balanced Acc: 0.9775
+   - Potential Gain  : +0.0022
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0307_sdv5_5000_5000
+   - Dataset         : sdv5
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9966
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9722
+   - Real/Fake Acc   : 0.9558 / 0.9886
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.4721
+   - Best Balanced Acc: 0.9768
+   - Potential Gain  : +0.0046
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0309_vqdm_5000_5000
+   - Dataset         : vqdm
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9895
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9549
+   - Real/Fake Acc   : 0.9588 / 0.9510
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.3571
+   - Best Balanced Acc: 0.9573
+   - Potential Gain  : +0.0024
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0309_wukong_5000_5000
+   - Dataset         : wukong
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.9883
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9494
+   - Real/Fake Acc   : 0.9572 / 0.9416
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.3605
+   - Best Balanced Acc: 0.9518
+   - Potential Gain  : +0.0024
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0312_adm_5000_5000
+   - Dataset         : adm
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9938
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9608
+   - Real/Fake Acc   : 0.9750 / 0.9466
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.8400
+   - Best Balanced Acc: 0.9686
+   - Potential Gain  : +0.0078
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0314_biggan_5000_5000
+   - Dataset         : biggan
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9993
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9891
+   - Real/Fake Acc   : 0.9782 / 1.0000
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 1.4649
+   - Best Balanced Acc: 0.9933
+   - Potential Gain  : +0.0042
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0316_glide_5000_5000
+   - Dataset         : glide
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9995
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9871
+   - Real/Fake Acc   : 0.9764 / 0.9978
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 1.7075
+   - Best Balanced Acc: 0.9925
+   - Potential Gain  : +0.0054
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0319_midjourney_5000_5000
+   - Dataset         : midjourney
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9879
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9362
+   - Real/Fake Acc   : 0.9748 / 0.8976
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -1.2947
+   - Best Balanced Acc: 0.9514
+   - Potential Gain  : +0.0152
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0321_sdv4_5000_5000
+   - Dataset         : sdv4
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9983
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9837
+   - Real/Fake Acc   : 0.9738 / 0.9936
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.6915
+   - Best Balanced Acc: 0.9860
+   - Potential Gain  : +0.0023
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0323_sdv5_5000_5000
+   - Dataset         : sdv5
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9983
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9825
+   - Real/Fake Acc   : 0.9728 / 0.9922
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.5128
+   - Best Balanced Acc: 0.9842
+   - Potential Gain  : +0.0017
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0326_vqdm_5000_5000
+   - Dataset         : vqdm
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9987
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9844
+   - Real/Fake Acc   : 0.9744 / 0.9944
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.5120
+   - Best Balanced Acc: 0.9847
+   - Potential Gain  : +0.0003
+
+...............................................................................................
+
+▶ Folder: eval_20260218_0328_wukong_5000_5000
+   - Dataset         : wukong
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9971
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.9770
+   - Real/Fake Acc   : 0.9770 / 0.9770
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.0103
+   - Best Balanced Acc: 0.9772
+   - Potential Gain  : +0.0002
+
+...............................................................................................
+
+▶ Folder: eval_20260218_1646_chameleon_5000_5000
+   - Dataset         : chameleon
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitb14_epoch20.pth
+   - ROC-AUC         : 0.7096
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.5742
+   - Real/Fake Acc   : 0.9704 / 0.1780
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -2.1012
+   - Best Balanced Acc: 0.6489
+   - Potential Gain  : +0.0747
+
+...............................................................................................
+
+▶ Folder: eval_20260218_1838_chameleon_5000_5000
+   - Dataset         : chameleon
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vits14_epoch20.pth
+   - ROC-AUC         : 0.5928
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.5637
+   - Real/Fake Acc   : 0.8172 / 0.3102
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -0.4577
+   - Best Balanced Acc: 0.5764
+   - Potential Gain  : +0.0127
+
+...............................................................................................
+
+▶ Folder: eval_20260218_1839_chameleon_5000_5000
+   - Dataset         : chameleon
+   - Checkpoint      : ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.7743
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.5825
+   - Real/Fake Acc   : 0.9810 / 0.1840
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : -2.5922
+   - Best Balanced Acc: 0.7137
+   - Potential Gain  : +0.1312
+
+...............................................................................................
+
+▶ Folder: eval_20260218_1912_chameleon_5000_5000
+   - Dataset         : chameleon
+   - Checkpoint      : ./tuned_fewshot_200_detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+   - ROC-AUC         : 0.9216
+-------------------------------------------------------
+   [Standard Metric (Logit 0)]
+   - Balanced Acc    : 0.8456
+   - Real/Fake Acc   : 0.8218 / 0.8694
+-------------------------------------------------------
+   [Optimal Metric (Calibration)]
+   - Best Threshold  : 0.2315
+   - Best Balanced Acc: 0.8474
+   - Potential Gain  : +0.0018
+
+...............................................................................................
+

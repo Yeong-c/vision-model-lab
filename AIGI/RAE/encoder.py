@@ -60,6 +60,18 @@ class Dinov2withNorm(nn.Module):
         unused_token_num = 5  # 1 CLS + 4 register tokens
         image_features = x.last_hidden_state[:, unused_token_num:]
         return image_features
+
+    def dinov2_forward(self, x: torch.Tensor, return_all_layers: bool = False) -> Union[torch.Tensor, tuple]:
+        x = self.encoder(x, output_hidden_states=True)
+        unused_token_num = 5  # 1 CLS + 4 register tokens
+        image_features = x.last_hidden_state[:, unused_token_num:]
+
+        if return_all_layers:
+            # 모든 층(hidden_states)에서 register token을 제외하고 리스트로 저장
+            all_layers = [layer[:, unused_token_num:] for layer in x.hidden_states]
+            return image_features, all_layers
+            
+        return image_features
     
     def full_forward(self, x):
         x = self.encoder(x, output_hidden_states=True)

@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: ntire_val | Real/Fake Sample: 6000/6000
+Main LPIPS Layer: 2
+  >>  AUC: 0.7492 | AP: 0.7627
+==================================================
+[AUC by Layer]
+Layer 1: 0.76081 Layer 2: 0.74924 
+Layer 3: 0.73346 Layer 4: 0.67575 
+Layer 5: 0.62033 
+
+[AP by Layer]
+Layer 1: 0.75693 Layer 2: 0.76269 
+Layer 3: 0.74942 Layer 4: 0.69669 
+Layer 5: 0.64368 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00028640.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00042959.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/ntire_val_imagenet/ai/4ddbd16ab4dd7ef08379.jpg
+ - fake_errormin_success     : data/genimage_test/test/ntire_val_imagenet/ai/850db47eb6b21e56c5e8.jpg

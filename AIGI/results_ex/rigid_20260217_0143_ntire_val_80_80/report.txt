@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: ntire_val | Real/Fake Sample: 80/80
+Noise Level: 0.05
+ >>  AUC: 0.8439 | AP: 0.8564
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0002) : data/imagenet-1k/ILSVRC2012_val_00017236.JPEG
+ - real_worst_fail           (Score: 0.0298) : data/imagenet-1k/ILSVRC2012_val_00022306.JPEG
+ - fake_best_success         (Score: 0.3812) : data/genimage_test/test/ntire_val_imagenet/ai/0aa99329520c9757f27d.jpg
+ - fake_worst_fail           (Score: 0.0003) : data/genimage_test/test/ntire_val_imagenet/ai/23a9fe10760b94f0b69f.jpg

@@ -1,0 +1,8 @@
+{
+    "method": "aeroblade_vae",
+    "dataset": "glide",
+    "fake": 6000,
+    "real": 6000,
+    "batch_size": 8,
+    "noise": 0.05
+}

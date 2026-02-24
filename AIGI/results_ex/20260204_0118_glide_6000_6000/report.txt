@@ -1,0 +1,13 @@
+Experiment Date: 20260204_0118
+Method: AEROBLADE | Dataset: glide
+Main LPIPS Layer: 2
+==================================================
+AUC: 0.8257
+AP: 0.8343
+==================================================
+
+[극단 샘플 경로]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00037348.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00007849.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/glide_imagenet/ai/GLIDE_1000_200_05_568_glide_00039.png
+ - fake_errormin_success     : data/genimage_test/test/glide_imagenet/ai/GLIDE_1000_200_05_549_glide_00020.png

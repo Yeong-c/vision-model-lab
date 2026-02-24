@@ -1,0 +1,7 @@
+Dataset: midjourney
+Checkpoint: ./detector_all_r800_f800_middinov2_vitl14_epoch20.pth
+Real Samples: 5000
+Fake Samples: 5000
+Noise Level: 0.05
+ROC-AUC: 0.9879
+Average Precision: 0.9861

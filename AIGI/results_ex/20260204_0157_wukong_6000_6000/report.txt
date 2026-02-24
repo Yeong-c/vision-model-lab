@@ -1,0 +1,13 @@
+Experiment Date: 20260204_0157
+Method: AEROBLADE | Dataset: wukong
+Main LPIPS Layer: 2
+==================================================
+AUC: 0.5774
+AP: 0.5422
+==================================================
+
+[극단 샘플 경로]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00041634.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00002711.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/wukong_imagenet/ai/782_wukong_image61.png
+ - fake_errormin_success     : data/genimage_test/test/wukong_imagenet/ai/846_wukong_image128.png

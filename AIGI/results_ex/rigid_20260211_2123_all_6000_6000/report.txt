@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: all | Real/Fake Sample: 6000/6000
+Noise Level: 0.05
+ >>  AUC: 0.7816 | AP: 0.7995
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0001) : data/imagenet-1k/ILSVRC2012_val_00002383.JPEG
+ - real_worst_fail           (Score: 0.1914) : data/imagenet-1k/ILSVRC2012_val_00020836.JPEG
+ - fake_best_success         (Score: 0.5214) : data/genimage_test/test/glide_imagenet/ai/GLIDE_1000_200_05_578_glide_00035.png
+ - fake_worst_fail           (Score: 0.0003) : data/genimage_test/test/wukong_imagenet/ai/410_wukong_image128.png

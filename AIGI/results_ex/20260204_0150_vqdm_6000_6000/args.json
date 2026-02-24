@@ -1,0 +1,7 @@
+{
+    "method": "AEROBLADE",
+    "dataset": "vqdm",
+    "fake": 6000,
+    "real": 6000,
+    "batch_size": 16
+}

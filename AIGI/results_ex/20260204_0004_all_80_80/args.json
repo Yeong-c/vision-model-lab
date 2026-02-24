@@ -1,0 +1,7 @@
+{
+    "method": "aeroblade",
+    "dataset": "all",
+    "fake": 80,
+    "real": 80,
+    "batch_size": 16
+}

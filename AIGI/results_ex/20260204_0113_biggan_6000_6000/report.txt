@@ -1,0 +1,13 @@
+Experiment Date: 20260204_0113
+Method: AEROBLADE | Dataset: biggan
+Main LPIPS Layer: 2
+==================================================
+AUC: 0.5934
+AP: 0.5686
+==================================================
+
+[극단 샘플 경로]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00001188.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00018528.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/biggan_imagenet/ai/895_biggan_00039.png
+ - fake_errormin_success     : data/genimage_test/test/biggan_imagenet/ai/644_biggan_00143.png

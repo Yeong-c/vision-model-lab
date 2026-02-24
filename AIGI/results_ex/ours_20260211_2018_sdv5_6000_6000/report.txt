@@ -1,0 +1,28 @@
+==================================================
+[Result]
+Method: OURS (Multi-Layer) | Dataset: sdv5 | Real/Fake Sample: 6000/6000
+Main Layer: 6 (Total 13)
+  >>  AUC: 0.6054 | AP: 0.6035
+==================================================
+[AUC by Layer]
+L0: 0.4288 L1: 0.4511 L2: 0.4908 L3: 0.5279 
+L4: 0.5599 L5: 0.5739 L6: 0.6054 L7: 0.6196 
+L8: 0.6385 L9: 0.6367 L10: 0.6357 L11: 0.6793 
+L12: 0.6827 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00013644.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00025932.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/sdv5_imagenet/ai/611_sdv5_00039.png
+ - fake_errormin_success     : data/genimage_test/test/sdv5_imagenet/ai/816_sdv5_00195.png
+
+
+[Ensemble Result (Random Forest)]
+AUC: 0.7973
+AP: 0.7720
+
+[Feature Importance]
+L0: 0.1214  L1: 0.0887  L2: 0.0668  L3: 0.0623  
+L4: 0.0696  L5: 0.0615  L6: 0.0664  L7: 0.0638  
+L8: 0.0677  L9: 0.0645  L10: 0.0711  L11: 0.0966  
+L12: 0.0995  

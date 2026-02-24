@@ -1,0 +1,13 @@
+Experiment Date: 20260204_0150
+Method: AEROBLADE | Dataset: vqdm
+Main LPIPS Layer: 2
+==================================================
+AUC: 0.5400
+AP: 0.5599
+==================================================
+
+[극단 샘플 경로]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00041634.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00028259.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/vqdm_imagenet/ai/VQDM_1000_200_08_836_vqdm_00143.png
+ - fake_errormin_success     : data/genimage_test/test/vqdm_imagenet/ai/VQDM_1000_200_05_530_vqdm_00143.png

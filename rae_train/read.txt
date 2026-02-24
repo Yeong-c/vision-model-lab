@@ -1,0 +1,7 @@
+lambda 계산 clamp 1.0으로 조절
+총 120 에포크
+~80 순수 디코더 학습
+~100 Disc 학습
+~120 GAN Loss 학습
+
+python rae_train.py --batch_size 32 --num_workers 8 --epoch 120 --device cuda

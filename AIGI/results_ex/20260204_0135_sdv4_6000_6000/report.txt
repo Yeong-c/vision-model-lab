@@ -1,0 +1,13 @@
+Experiment Date: 20260204_0135
+Method: AEROBLADE | Dataset: sdv4
+Main LPIPS Layer: 2
+==================================================
+AUC: 0.5399
+AP: 0.5248
+==================================================
+
+[극단 샘플 경로]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00042701.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00029071.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/sdv4_imagenet/ai/611_sdv4_00009.png
+ - fake_errormin_success     : data/genimage_test/test/sdv4_imagenet/ai/585_sdv4_00074.png

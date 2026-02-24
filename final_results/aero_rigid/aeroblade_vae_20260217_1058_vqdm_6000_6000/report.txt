@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: vqdm | Real/Fake Sample: 6000/6000
+Main LPIPS Layer: 2
+  >>  AUC: 0.6217 | AP: 0.6421
+==================================================
+[AUC by Layer]
+Layer 1: 0.64208 Layer 2: 0.62171 
+Layer 3: 0.57035 Layer 4: 0.67139 
+Layer 5: 0.68380 
+
+[AP by Layer]
+Layer 1: 0.65919 Layer 2: 0.64209 
+Layer 3: 0.58252 Layer 4: 0.64945 
+Layer 5: 0.66585 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00018119.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00028259.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/vqdm_imagenet/ai/VQDM_1000_200_00_049_vqdm_00035.png
+ - fake_errormin_success     : data/genimage_test/test/vqdm_imagenet/ai/VQDM_1000_200_08_875_vqdm_00143.png

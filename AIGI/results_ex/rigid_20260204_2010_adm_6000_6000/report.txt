@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: adm | Real/Fake Sample: 6000/6000
+Noise Level: 0.05
+ >>  AUC: 0.7750 | AP: 0.7886
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0001) : data/imagenet-1k/ILSVRC2012_val_00002383.JPEG
+ - real_worst_fail           (Score: 0.2187) : data/imagenet-1k/ILSVRC2012_val_00020836.JPEG
+ - fake_best_success         (Score: 0.2475) : data/genimage_test/test/adm_imagenet/ai/794_adm_7.PNG
+ - fake_worst_fail           (Score: 0.0003) : data/genimage_test/test/adm_imagenet/ai/637_adm_34.PNG

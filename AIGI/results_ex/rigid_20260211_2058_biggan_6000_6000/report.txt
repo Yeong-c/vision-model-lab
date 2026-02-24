@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: biggan | Real/Fake Sample: 6000/6000
+Noise Level: 0.05
+ >>  AUC: 0.9759 | AP: 0.9763
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0001) : data/imagenet-1k/ILSVRC2012_val_00002383.JPEG
+ - real_worst_fail           (Score: 0.1456) : data/imagenet-1k/ILSVRC2012_val_00029230.JPEG
+ - fake_best_success         (Score: 0.4042) : data/genimage_test/test/biggan_imagenet/ai/696_biggan_00035.png
+ - fake_worst_fail           (Score: 0.0020) : data/genimage_test/test/biggan_imagenet/ai/102_biggan_00035.png

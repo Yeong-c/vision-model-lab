@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: all | Real/Fake Sample: 48000/48000
+Main LPIPS Layer: 2
+  >>  AUC: 0.6207 | AP: 0.6273
+==================================================
+[AUC by Layer]
+Layer 1: 0.60834 Layer 2: 0.62068 
+Layer 3: 0.58689 Layer 4: 0.54844 
+Layer 5: 0.51548 
+
+[AP by Layer]
+Layer 1: 0.60657 Layer 2: 0.62735 
+Layer 3: 0.59685 Layer 4: 0.55838 
+Layer 5: 0.53152 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00038692.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00007580.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/biggan_imagenet/ai/895_biggan_00039.png
+ - fake_errormin_success     : data/genimage_test/test/midjourney_imagenet/ai/623_midjourney_100.png

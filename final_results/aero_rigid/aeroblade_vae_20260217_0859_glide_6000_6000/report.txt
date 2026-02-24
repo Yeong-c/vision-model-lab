@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: glide | Real/Fake Sample: 6000/6000
+Main LPIPS Layer: 2
+  >>  AUC: 0.9559 | AP: 0.9543
+==================================================
+[AUC by Layer]
+Layer 1: 0.93274 Layer 2: 0.95589 
+Layer 3: 0.89905 Layer 4: 0.82566 
+Layer 5: 0.80973 
+
+[AP by Layer]
+Layer 1: 0.92841 Layer 2: 0.95429 
+Layer 3: 0.90658 Layer 4: 0.84089 
+Layer 5: 0.82252 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00039113.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00007580.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/glide_imagenet/ai/GLIDE_1000_200_02_291_glide_00035.png
+ - fake_errormin_success     : data/genimage_test/test/glide_imagenet/ai/GLIDE_1000_200_08_862_glide_00127.png

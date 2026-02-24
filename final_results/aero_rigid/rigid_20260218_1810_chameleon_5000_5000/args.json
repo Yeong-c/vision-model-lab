@@ -1,0 +1,8 @@
+{
+    "method": "rigid",
+    "dataset": "chameleon",
+    "fake": 5000,
+    "real": 5000,
+    "batch_size": 8,
+    "noise": 0.05
+}

@@ -1,0 +1,16 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: chameleon | Real/Fake Sample: 5000/5000
+Main LPIPS Layer: 2
+  >>  AUC: 0.7009 | AP: 0.6241
+==================================================
+[AUC by Layer]
+Layer 1: 0.67811 Layer 2: 0.70089 
+Layer 3: 0.71388 Layer 4: 0.69638 
+Layer 5: 0.65818 
+
+[AP by Layer]
+Layer 1: 0.62357 Layer 2: 0.62410 
+Layer 3: 0.63876 Layer 4: 0.62612 
+Layer 5: 0.60804 
+

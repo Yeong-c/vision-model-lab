@@ -1,0 +1,8 @@
+{
+    "method": "rigid",
+    "dataset": "sdv5",
+    "fake": 800,
+    "real": 800,
+    "batch_size": 16,
+    "noise": 0.1
+}

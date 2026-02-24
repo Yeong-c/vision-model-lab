@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: midjourney | Real/Fake Sample: 6000/6000
+Noise Level: 0.05
+ >>  AUC: 0.6262 | AP: 0.5958
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0035) : data/imagenet-1k/ILSVRC2012_val_00031211.JPEG
+ - real_worst_fail           (Score: 0.5493) : data/imagenet-1k/ILSVRC2012_val_00030176.JPEG
+ - fake_best_success         (Score: 0.4699) : data/genimage_test/test/midjourney_imagenet/ai/906_midjourney_198.png
+ - fake_worst_fail           (Score: 0.0050) : data/genimage_test/test/midjourney_imagenet/ai/524_midjourney_34.png

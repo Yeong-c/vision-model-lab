@@ -1,0 +1,3 @@
+AEROBLADE-RAE, AEROBLADE-VAE, RIGID의 AUC, AP가 기록된 실험 결과들입니다.
+Training-Free 방법론들은 대부분 기준이 되는 Score의 절대적인 스케일이 작아서
+0.5로 점수 임계값을 설정하면 판별히 힘들어 AUC, AP를 주로 사용합니다.

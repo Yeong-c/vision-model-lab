@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: wukong | Real/Fake Sample: 6000/6000
+Main LPIPS Layer: 2
+  >>  AUC: 0.9791 | AP: 0.9596
+==================================================
+[AUC by Layer]
+Layer 1: 0.92325 Layer 2: 0.97907 
+Layer 3: 0.96378 Layer 4: 0.91172 
+Layer 5: 0.86077 
+
+[AP by Layer]
+Layer 1: 0.87861 Layer 2: 0.95961 
+Layer 3: 0.93734 Layer 4: 0.87507 
+Layer 5: 0.83047 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00001949.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00008105.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/wukong_imagenet/ai/758_wukong_image198.png
+ - fake_errormin_success     : data/genimage_test/test/wukong_imagenet/ai/596_wukong_image61.png

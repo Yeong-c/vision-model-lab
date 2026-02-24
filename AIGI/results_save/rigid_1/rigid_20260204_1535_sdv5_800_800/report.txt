@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: sdv5 | Real/Fake Sample: 800/800
+Noise Level: 0.1
+ >>  AUC: 0.4624 | AP: 0.4556
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0103) : data/imagenet-1k/ILSVRC2012_val_00002604.JPEG
+ - real_worst_fail           (Score: 0.7154) : data/imagenet-1k/ILSVRC2012_val_00004208.JPEG
+ - fake_best_success         (Score: 0.5176) : data/genimage_test/test/sdv5_imagenet/ai/492_sdv5_00039.png
+ - fake_worst_fail           (Score: 0.0120) : data/genimage_test/test/sdv5_imagenet/ai/839_sdv5_00020.png

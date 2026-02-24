@@ -1,0 +1,8 @@
+{
+    "method": "aeroblade",
+    "dataset": "sdv5",
+    "fake": 80,
+    "real": 80,
+    "batch_size": 8,
+    "noise": 0.05
+}

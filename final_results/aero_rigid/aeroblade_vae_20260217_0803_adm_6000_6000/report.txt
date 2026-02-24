@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: adm | Real/Fake Sample: 6000/6000
+Main LPIPS Layer: 2
+  >>  AUC: 0.7412 | AP: 0.7637
+==================================================
+[AUC by Layer]
+Layer 1: 0.72077 Layer 2: 0.74122 
+Layer 3: 0.67581 Layer 4: 0.65676 
+Layer 5: 0.63972 
+
+[AP by Layer]
+Layer 1: 0.72440 Layer 2: 0.76372 
+Layer 3: 0.70448 Layer 4: 0.66138 
+Layer 5: 0.63985 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00028640.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00024965.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/adm_imagenet/ai/288_adm_34.PNG
+ - fake_errormin_success     : data/genimage_test/test/adm_imagenet/ai/644_adm_174.PNG

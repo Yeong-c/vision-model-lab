@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: wukong | Real/Fake Sample: 6000/6000
+Noise Level: 0.05
+ >>  AUC: 0.7235 | AP: 0.6753
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0000) : data/imagenet-1k/ILSVRC2012_val_00041080.JPEG
+ - real_worst_fail           (Score: 0.2629) : data/imagenet-1k/ILSVRC2012_val_00030602.JPEG
+ - fake_best_success         (Score: 0.2200) : data/genimage_test/test/wukong_imagenet/ai/760_wukong_image128.png
+ - fake_worst_fail           (Score: 0.0000) : data/genimage_test/test/wukong_imagenet/ai/828_wukong_image86.png

@@ -94,19 +94,62 @@ class RAE(nn.Module):
             z = (z - latent_mean) / torch.sqrt(latent_var + self.eps)
         return z
     
-    def decode(self, z: torch.Tensor) -> torch.Tensor:
+    def decode(self, z: torch.Tensor, return_internals: bool = False, latent_noise_scale: float = 0.0):
+        
+        # 1. Latent Perturbation (핵심: 잠재 공간 흔들기)
+        # z는 encode를 거쳐서 이미 (Batch, Channel, H, W) 형태입니다.
+        if latent_noise_scale > 0:
+            noise = torch.randn_like(z) * latent_noise_scale
+            z = z + noise
+
+        # 2. Denormalization (정규화 해제)
         if self.do_normalization:
             latent_mean = self.latent_mean.to(z.device) if self.latent_mean is not None else 0
             latent_var = self.latent_var.to(z.device) if self.latent_var is not None else 1
             z = z * torch.sqrt(latent_var + self.eps) + latent_mean
+            
+        # 3. Reshape back to Sequence (4D -> 3D)
         if self.reshape_to_2d:
-            b, c, h, w = z.shape
+            # 여기서 에러가 났던 이유는 z가 3D로 들어왔기 때문입니다.
+            # 이제 self.encode를 쓰면 z가 4D로 보장되므로 안전합니다.
+            b, c, h, w = z.shape 
             n = h * w
             z = z.view(b, c, n).transpose(1, 2)
-        output = self.decoder(z, drop_cls_token=False).logits
-        x_rec = self.decoder.unpatchify(output)
+            
+        # 4. Transformer Decoder Forward (Attention Off, Hidden Only)
+        outputs = self.decoder(
+            z, 
+            drop_cls_token=False, 
+            output_attentions=False, 
+            output_hidden_states=return_internals,
+            return_dict=True
+        )
+        
+        logits = outputs.logits
+        x_rec = self.decoder.unpatchify(logits)
         x_rec = x_rec * self.encoder_std.to(x_rec.device) + self.encoder_mean.to(x_rec.device)
+        
+        if return_internals:
+            return x_rec, outputs.hidden_states
+            
         return x_rec
+
+    # [수정] 인코딩 과정을 self.encode로 위임하여 Shape 불일치 해결
+    @torch.no_grad()
+    def get_latent_stress_internals(self, x: torch.Tensor, latent_noise: float = 0.0):
+        """
+        Input -> Encode (Standard) -> [Add Noise to Latent] -> Decode -> Return Hidden States
+        """
+        # 1. Encode
+        # self.encode 메서드는 이미 Interpolation, Normalize, Reshaping(4D)을 다 처리해줍니다.
+        # 따라서 여기서 반환된 z는 decode가 좋아하는 (B, C, H, W) 형태입니다.
+        z = self.encode(x)
+        
+        # 2. Decode with Perturbation
+        # 내부적으로 latent_noise_scale만큼 z를 흔들고 Hidden State를 뱉습니다.
+        _, hidden_states = self.decode(z, return_internals=True, latent_noise_scale=latent_noise)
+        
+        return hidden_states
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         z = self.encode(x)

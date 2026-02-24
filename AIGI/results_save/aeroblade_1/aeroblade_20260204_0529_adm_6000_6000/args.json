@@ -1,0 +1,8 @@
+{
+    "method": "AEROBLADE",
+    "dataset": "adm",
+    "fake": 6000,
+    "real": 6000,
+    "batch_size": 32,
+    "noise": 0.05
+}

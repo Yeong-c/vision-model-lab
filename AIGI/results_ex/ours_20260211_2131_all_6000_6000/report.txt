@@ -1,0 +1,22 @@
+==================================================
+[Result]
+Method: OURS (Multi-Layer) | Dataset: all | Real/Fake Sample: 6000/6000
+Main Layer: 6 (Total 13)
+  >>  AUC: 0.5989 | AP: 0.6053
+==================================================
+[AUC by Layer]
+L0: 0.6087 L1: 0.5984 L2: 0.6085 L3: 0.6140 
+L4: 0.6088 L5: 0.5944 L6: 0.5989 L7: 0.5807 
+L8: 0.5574 L9: 0.5309 L10: 0.4958 L11: 0.4782 
+L12: 0.4312 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00013644.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00032580.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/sdv4_imagenet/ai/611_sdv4_00039.png
+ - fake_errormin_success     : data/genimage_test/test/glide_imagenet/ai/GLIDE_1000_200_00_059_glide_00035.png
+
+
+[Ensemble Result (MLP Neural Net)]
+AUC: 0.8111
+AP: 0.8256

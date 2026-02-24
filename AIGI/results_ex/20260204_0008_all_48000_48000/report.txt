@@ -1,0 +1,13 @@
+Experiment Date: 20260204_0008
+Method: AEROBLADE | Dataset: all
+Main LPIPS Layer: 2
+==================================================
+AUC: 0.6216
+AP: 0.6280
+==================================================
+
+[극단 샘플 경로]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00038692.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00007580.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/biggan_imagenet/ai/895_biggan_00039.png
+ - fake_errormin_success     : data/genimage_test/test/midjourney_imagenet/ai/623_midjourney_100.png

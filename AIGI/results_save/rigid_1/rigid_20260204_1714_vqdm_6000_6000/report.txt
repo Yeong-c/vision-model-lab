@@ -1,0 +1,11 @@
+==================================================
+[Result]
+Method: Rigid | Dataset: vqdm | Real/Fake Sample: 6000/6000
+Noise Level: 0.05
+ >>  AUC: 0.8096 | AP: 0.8083
+==================================================
+[Sample Path]
+ - real_best_success         (Score: 0.0018) : data/imagenet-1k/ILSVRC2012_val_00002383.JPEG
+ - real_worst_fail           (Score: 0.4338) : data/imagenet-1k/ILSVRC2012_val_00049112.JPEG
+ - fake_best_success         (Score: 0.6092) : data/genimage_test/test/vqdm_imagenet/ai/VQDM_1000_200_03_376_vqdm_00039.png
+ - fake_worst_fail           (Score: 0.0047) : data/genimage_test/test/vqdm_imagenet/ai/VQDM_1000_200_05_533_vqdm_00127.png

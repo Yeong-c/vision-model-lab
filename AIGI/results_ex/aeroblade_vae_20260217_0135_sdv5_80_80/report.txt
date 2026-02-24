@@ -1,0 +1,21 @@
+==================================================
+[Result]
+Method: AEROBLADE | Dataset: sdv5 | Real/Fake Sample: 80/80
+Main LPIPS Layer: 2
+  >>  AUC: 0.9831 | AP: 0.9809
+==================================================
+[AUC by Layer]
+Layer 1: 0.93375 Layer 2: 0.98312 
+Layer 3: 0.95484 Layer 4: 0.93953 
+Layer 5: 0.90703 
+
+[AP by Layer]
+Layer 1: 0.93153 Layer 2: 0.98088 
+Layer 3: 0.94867 Layer 4: 0.92752 
+Layer 5: 0.90116 
+
+[Sample Path]
+ - real_errormax_success     : data/imagenet-1k/ILSVRC2012_val_00029048.JPEG
+ - real_errormin_fail        : data/imagenet-1k/ILSVRC2012_val_00025242.JPEG
+ - fake_errormax_fail        : data/genimage_test/test/sdv5_imagenet/ai/708_sdv5_00195.png
+ - fake_errormin_success     : data/genimage_test/test/sdv5_imagenet/ai/828_sdv5_00039.png
