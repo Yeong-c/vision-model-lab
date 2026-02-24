@@ -1,4 +1,3 @@
----
 # vision-model-lab (산학협력프로젝트 2025-2) 🚀
 
 ![status-badge](https://img.shields.io/badge/status-experimental-orange.svg)
